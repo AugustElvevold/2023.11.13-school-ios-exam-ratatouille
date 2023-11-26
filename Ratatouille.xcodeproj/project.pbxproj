@@ -12,6 +12,14 @@
 		BE0A74B42B090F4C006DD3CC /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0A74B32B090F4C006DD3CC /* Item.swift */; };
 		BE0A74B62B090F4E006DD3CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE0A74B52B090F4E006DD3CC /* Assets.xcassets */; };
 		BE0A74B92B090F4E006DD3CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE0A74B82B090F4E006DD3CC /* Preview Assets.xcassets */; };
+		BE0A74C02B091007006DD3CC /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0A74BF2B091007006DD3CC /* Meal.swift */; };
+		BE0A74C22B091974006DD3CC /* MyMealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0A74C12B091974006DD3CC /* MyMealsView.swift */; };
+		BE0A74C42B091985006DD3CC /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0A74C32B091985006DD3CC /* SettingView.swift */; };
+		BE0A74CA2B091BEE006DD3CC /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0A74C92B091BEE006DD3CC /* SearchView.swift */; };
+		BE20DB852B0B89B0003C3992 /* APISercive.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE20DB842B0B89B0003C3992 /* APISercive.swift */; };
+		BE20DB872B0B907F003C3992 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE20DB862B0B907F003C3992 /* SearchViewModel.swift */; };
+		BE2ED07D2B126429002C1EBE /* AddMealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2ED07C2B126429002C1EBE /* AddMealView.swift */; };
+		BE4B0CE02B1375C000833E13 /* MealDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4B0CDF2B1375C000833E13 /* MealDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +29,14 @@
 		BE0A74B32B090F4C006DD3CC /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		BE0A74B52B090F4E006DD3CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE0A74B82B090F4E006DD3CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BE0A74BF2B091007006DD3CC /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
+		BE0A74C12B091974006DD3CC /* MyMealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMealsView.swift; sourceTree = "<group>"; };
+		BE0A74C32B091985006DD3CC /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		BE0A74C92B091BEE006DD3CC /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		BE20DB842B0B89B0003C3992 /* APISercive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APISercive.swift; sourceTree = "<group>"; };
+		BE20DB862B0B907F003C3992 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		BE2ED07C2B126429002C1EBE /* AddMealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMealView.swift; sourceTree = "<group>"; };
+		BE4B0CDF2B1375C000833E13 /* MealDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +70,8 @@
 			isa = PBXGroup;
 			children = (
 				BE0A74AF2B090F4C006DD3CC /* RatatouilleApp.swift */,
-				BE0A74B12B090F4C006DD3CC /* ContentView.swift */,
-				BE0A74B32B090F4C006DD3CC /* Item.swift */,
+				BE0A74C82B091AFE006DD3CC /* Views */,
+				BE0A74C72B091AF2006DD3CC /* Models */,
 				BE0A74B52B090F4E006DD3CC /* Assets.xcassets */,
 				BE0A74B72B090F4E006DD3CC /* Preview Content */,
 			);
@@ -68,6 +84,54 @@
 				BE0A74B82B090F4E006DD3CC /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		BE0A74C52B091AE3006DD3CC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BE0A74C32B091985006DD3CC /* SettingView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		BE0A74C62B091AE9006DD3CC /* MyMeals */ = {
+			isa = PBXGroup;
+			children = (
+				BE0A74C12B091974006DD3CC /* MyMealsView.swift */,
+				BE4B0CDF2B1375C000833E13 /* MealDetailView.swift */,
+				BE2ED07C2B126429002C1EBE /* AddMealView.swift */,
+			);
+			path = MyMeals;
+			sourceTree = "<group>";
+		};
+		BE0A74C72B091AF2006DD3CC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BE0A74B32B090F4C006DD3CC /* Item.swift */,
+				BE0A74BF2B091007006DD3CC /* Meal.swift */,
+				BE20DB842B0B89B0003C3992 /* APISercive.swift */,
+				BE20DB862B0B907F003C3992 /* SearchViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BE0A74C82B091AFE006DD3CC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BE0A74B12B090F4C006DD3CC /* ContentView.swift */,
+				BE0A74C62B091AE9006DD3CC /* MyMeals */,
+				BE0A74CB2B091BF4006DD3CC /* Search */,
+				BE0A74C52B091AE3006DD3CC /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BE0A74CB2B091BF4006DD3CC /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				BE0A74C92B091BEE006DD3CC /* SearchView.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,9 +204,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE0A74C02B091007006DD3CC /* Meal.swift in Sources */,
 				BE0A74B22B090F4C006DD3CC /* ContentView.swift in Sources */,
 				BE0A74B42B090F4C006DD3CC /* Item.swift in Sources */,
+				BE4B0CE02B1375C000833E13 /* MealDetailView.swift in Sources */,
+				BE0A74CA2B091BEE006DD3CC /* SearchView.swift in Sources */,
+				BE0A74C42B091985006DD3CC /* SettingView.swift in Sources */,
+				BE0A74C22B091974006DD3CC /* MyMealsView.swift in Sources */,
+				BE20DB872B0B907F003C3992 /* SearchViewModel.swift in Sources */,
+				BE20DB852B0B89B0003C3992 /* APISercive.swift in Sources */,
 				BE0A74B02B090F4C006DD3CC /* RatatouilleApp.swift in Sources */,
+				BE2ED07D2B126429002C1EBE /* AddMealView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
