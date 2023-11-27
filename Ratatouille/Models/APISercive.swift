@@ -37,16 +37,16 @@ func fetchData<T: Decodable>(from urlString: String) async -> T? {
 	}
 }
 
-func fetchMeals(query: String) async -> [APIMeal] {
+func fetchMeals(query: String) async -> [Meal] {
 	let urlString = APIString.search + (query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
 	let response: APIMealResponse? = await fetchData(from: urlString)
 	return response?.meals ?? []
 }
 
-func fetchMealsByItem(from urlString: String) async -> [APIMeal] {
+func fetchMealsByItem(from urlString: String) async -> [Meal] {
 	let response: APIMealResponse? = await fetchData(from: urlString)
 	// Uses response meals names to fetch the full meals one by one and then add them to meals before returning. The API does not return a full meal when searching by category, country or ingredient...
-	var meals: [APIMeal] = []
+	var meals: [Meal] = []
 	print("fetchMealsByItem response: \(response?.meals ?? [])")
 	for response in response?.meals ?? [] {
 		print("Fetching \(response.name)")

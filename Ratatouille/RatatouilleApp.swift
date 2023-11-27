@@ -22,10 +22,19 @@ struct RatatouilleApp: App {
 //            fatalError("Could not create ModelContainer: \(error)")
 //        } 
 //    }()
+	@StateObject var searchViewModel = SearchViewModel()
+	@StateObject var csManager = ColorSchemeManager()
+	@StateObject var tabSelection = TabSelection()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+						.environmentObject(csManager)
+						.environmentObject(tabSelection)
+						.environmentObject(searchViewModel)
+						.onAppear(){
+							csManager.applyColorScheme()
+						}
         }
 				.modelContainer(for: Meal.self)
     }

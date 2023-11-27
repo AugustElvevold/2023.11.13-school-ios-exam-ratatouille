@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Meal {
+final class Meal: Decodable, Identifiable {
 	@Attribute(.unique) var uuid: UUID
 	var id: String
 	var name: String
@@ -20,8 +20,9 @@ final class Meal {
 	var strYoutube: String
 	var ingredients: [[String]]
 	var strSource: String
-	var saved: Date
-	var lastUpdated: Date
+	var saved: Bool
+	var updatedDate: Date
+	var createdDate: Date
 	var archived: Bool
 	var favorite: Bool
 	
@@ -31,7 +32,7 @@ final class Meal {
 		strCategory: String = "",
 		strArea: String = "",
 		strInstructions: String = "",
-		strMealThumb: String = "",
+		strMealThumb: String = "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
 		strYoutube: String = "",
 		ingredients: [[String]] = [],
 		strSource: String = ""
@@ -46,65 +47,12 @@ final class Meal {
 		self.strYoutube = strYoutube
 		self.ingredients = ingredients
 		self.strSource = strSource
-		self.saved = .now
-		self.lastUpdated = .now
+		self.saved = false
+		self.updatedDate = .now
+		self.createdDate = .now
 		self.archived = false
 		self.favorite = false
 	}
-}
-
-struct MealDisplay {
-	var id: String
-	var name: String
-	var strCategory: String
-	var strArea: String
-	var strInstructions: String
-	var strMealThumb: String
-	var strYoutube: String
-	var ingredients: [[String]]
-	var strSource: String
-	var saved: Date
-	var lastUpdated: Date
-	var archived: Bool
-	var favorite: Bool
-	var isSaved: Bool = false
-}
-
-extension MealDisplay {
-	init(from apiMeal: APIMeal) {
-		self.id = apiMeal.id
-		self.name = apiMeal.name
-		self.strCategory = apiMeal.strCategory
-		self.strArea = apiMeal.strArea
-		self.strInstructions = apiMeal.strInstructions
-		self.strMealThumb = apiMeal.strMealThumb
-		self.strYoutube = apiMeal.strYoutube
-		self.ingredients = apiMeal.ingredients
-		self.strSource = apiMeal.strSource
-		self.saved = .now
-		self.lastUpdated = .now
-		self.archived = false
-		self.favorite = false
-		self.isSaved = false
-	}
-}
-
-struct APIMealResponse: Decodable {
-	var meals: [APIMeal]?
-}
-
-struct APIMeal: Identifiable, Decodable {
-	var uuid = UUID()
-	var id: String
-	var name: String
-	var strCategory: String
-	var strArea: String
-	var strInstructions: String
-	var strMealThumb: String
-	var strYoutube: String
-	var ingredients: [[String]]
-	var strSource: String
-	
 	
 	enum CodingKeys: String, CodingKey {
 		case id = "idMeal"
@@ -122,7 +70,7 @@ struct APIMeal: Identifiable, Decodable {
 		strCategory = try container.decodeIfPresent(String.self, forKey: .strCategory) ?? "Unknown Category"
 		strArea = try container.decodeIfPresent(String.self, forKey: .strArea) ?? "Unknown Area"
 		strInstructions = try container.decodeIfPresent(String.self, forKey: .strInstructions) ?? "No Instructions"
-		strMealThumb = try container.decodeIfPresent(String.self, forKey: .strMealThumb) ?? "default_thumbnail_url"
+		strMealThumb = try container.decodeIfPresent(String.self, forKey: .strMealThumb) ?? "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg"
 		strYoutube = try container.decodeIfPresent(String.self, forKey: .strYoutube) ?? ""
 		strSource = try container.decodeIfPresent(String.self, forKey: .strSource) ?? ""
 		
@@ -132,11 +80,23 @@ struct APIMeal: Identifiable, Decodable {
 			let measureKey = CodingKeys(rawValue: "strMeasure\(i)")!
 			
 			if let ingredient = try container.decodeIfPresent(String.self, forKey: ingredientKey),
-					let measure = try container.decodeIfPresent(String.self, forKey: measureKey),
-					!ingredient.isEmpty, !measure.isEmpty {
+				 let measure = try container.decodeIfPresent(String.self, forKey: measureKey),
+				 !ingredient.isEmpty, !measure.isEmpty {
 				tempIngredients.append([ingredient, measure])
 			}
 		}
 		self.ingredients = tempIngredients
+		
+		// Set default values for properties not present in the API response
+		uuid = UUID()
+		saved = false
+		updatedDate = .now
+		createdDate = .now
+		archived = false
+		favorite = false
 	}
+}
+
+struct APIMealResponse: Decodable {
+	var meals: [Meal]?
 }
