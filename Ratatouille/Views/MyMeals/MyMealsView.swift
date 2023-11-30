@@ -18,34 +18,33 @@ struct MyMealsView: View {
 	
 	var body: some View {
 		NavigationStack {
-			if meals.isEmpty {
-				ContentUnavailableView {
-					Label("Ingen oppskrifter", systemImage: "tray.fill")
-				} description: {
-					Button{
-						tabSelection.selectedTab = .search
-					} label: {
-						Text("Søk etter oppskrifter")
+			Group{
+				if meals.isEmpty {
+					ContentUnavailableView {
+						Label("Ingen oppskrifter", systemImage: "tray.fill")
+					} description: {
+						Button{
+							tabSelection.selectedTab = .search
+						} label: {
+							Text("Søk etter oppskrifter")
+						}
+						.padding(.top, 8)
 					}
-					.padding(.top, 8)
-					NavigationLink(destination: AddMealView()) {
-						Text("Lag egen oppskrift")
+				} else {
+					List(meals, id: \.self) { meal in
+						NavigationLink(destination: MealDetailView(meal: meal)){
+							MyMealRowView(meal: meal)
+						}
+						
 					}
-					.padding(.top, -8)
+					.listStyle(.plain)
 				}
-			} else {
-				List(meals, id: \.self) { meal in
-					NavigationLink(destination: MealDetailView(meal: meal)){
-						MyMealRowView(meal: meal)
-					}
-					
+			}
+			.navigationTitle("Oppskrifter")
+			.toolbar {
+				NavigationLink(destination: AddMealView()) {
+					Label("Legg til oppskrift", systemImage: "plus")
 				}
-				.toolbar {
-					NavigationLink(destination: AddMealView()) {
-						Label("Legg til oppskrift", systemImage: "plus")
-					}
-				}
-				.navigationTitle("Oppskrifter")
 			}
 		}
 	}
@@ -61,30 +60,24 @@ struct MyMealRowView: View {
 	
 	var body: some View {
 		HStack {
-			// Image
-			if !meal.strMealThumb.isEmpty, let url = URL(string: meal.strMealThumb) {
-				AsyncImage(url: url) { image in
+				AsyncImage(url: meal.image) { image in
 					image.resizable()
 				} placeholder: {
 					Color.gray.frame(width: 80, height: 80)
 				}
 				.frame(width: 80, height: 80)
 				.cornerRadius(10)
-			} else {
-				Color.gray.frame(width: 80, height: 80)
-					.cornerRadius(10)
-			}
 			
-			// Text Content
 			VStack(alignment: .leading, spacing: 4) {
 				Text(meal.name)
 					.font(.headline)
 					.lineLimit(/*@START_MENU_TOKEN@*/2/*@END_MENU_TOKEN@*/)
-				Text(meal.strCategory)
+				Text(meal.category)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-				Text(meal.strArea)
+//				Text(meal.area.name)
+				Text(meal.area)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)

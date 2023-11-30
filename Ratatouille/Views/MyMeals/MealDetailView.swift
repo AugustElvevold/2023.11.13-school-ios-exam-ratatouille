@@ -9,14 +9,15 @@ import SwiftUI
 import SwiftData
 
 struct MealDetailView: View {
+	@Environment(\.modelContext) private var modelContext
 	@Bindable var meal: Meal
+	var isSearchResult: Bool = false
+	@State var alreadySavedMeal = false
 	
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 0) {
-				// Image without padding to take full width
-				if !meal.strMealThumb.isEmpty {
-					AsyncImage(url: URL(string: meal.strMealThumb)) { image in
+					AsyncImage(url: meal.image) { image in
 						image.resizable()
 					} placeholder: {
 						ProgressView()
@@ -24,7 +25,6 @@ struct MealDetailView: View {
 					.aspectRatio(contentMode: .fit)
 					.frame(maxWidth: .infinity)
 //					.cornerRadius(8)
-				}
 				
 				// Content with padding
 				VStack(alignment: .leading, spacing: 10) {
@@ -32,12 +32,13 @@ struct MealDetailView: View {
 						.font(.title)
 						.fontWeight(.bold)
 					
-					Text("Kategori: \(meal.strCategory)")
-					Text("Land: \(meal.strArea)")
+					Text("Kategori: \(meal.category)")
+//					Text("Land: \(meal.area.name)")
+					Text("Land: \(meal.area)")
 					Text("Instruksjoner:")
 						.fontWeight(.bold)
 						.font(.headline)
-					Text(meal.strInstructions)
+					Text(meal.instructions)
 					
 					if !meal.ingredients.isEmpty {
 						VStack(alignment: .leading) {
@@ -58,8 +59,8 @@ struct MealDetailView: View {
 					}
 					
 					VStack {
-						if !meal.strSource.isEmpty {
-							Link(destination: URL(string: meal.strSource)!) {
+						if !meal.linkSource.isEmpty {
+							Link(destination: URL(string: meal.linkSource)!) {
 								HStack {
 									Image(systemName: "globe")
 										.foregroundColor(.white)
@@ -73,8 +74,8 @@ struct MealDetailView: View {
 							}
 						}
 						
-						if !meal.strYoutube.isEmpty {
-							Link(destination: URL(string: meal.strYoutube)!) {
+						if !meal.linkYoutube.isEmpty {
+							Link(destination: URL(string: meal.linkYoutube)!) {
 								HStack {
 									Image(systemName: "play.circle")
 										.foregroundColor(.white)
@@ -99,74 +100,40 @@ struct MealDetailView: View {
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {
-				if (meal.saved) {
+				if (meal.saved && !isSearchResult) {
 					NavigationLink(destination: EditMealView(meal: meal)) {
 						Text("Rediger")
 					}
+				} else {
+					Button() {
+						saveMeal(meal: meal)
+					} label: {
+						Text("Lagre")
+					}
+					.disabled(meal.saved || alreadySavedMeal)
 				}
 			}
 		}
 	}
+	func saveMeal(meal: Meal) {
+		let meal = Meal(
+			id: meal.id,
+			name: meal.name,
+			strCategory: meal.category,
+			//			strArea: meal.area.name,
+			strArea: meal.area,
+			strInstructions: meal.instructions,
+			strMealThumb: meal.image,
+			strYoutube: meal.linkYoutube,
+			ingredients: meal.ingredients,
+			strSource: meal.linkSource
+		)
+		let time = Date.now
+		meal.createdDate = time
+		meal.updatedDate = time
+		meal.saved = true
+		modelContext.insert(meal)
+		try? modelContext.save()
+		alreadySavedMeal = true
+	}
 }
-
-
-//#Preview {
-//	let json = """
-// {
-// "idMeal": "52771",
-// "strMeal": "Spicy Arrabiata Penne",
-// "strCategory": "Vegetarian",
-// "strArea": "Italian",
-// "strInstructions": "Bring a large pot of water to a boil...",
-// "strMealThumb": "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
-// "strYoutube": "https://www.youtube.com/watch?v=1IszT_guI08",
-// "strIngredient1": "penne rigate",
-// "strMeasure1": "1 pound",
-// "strIngredient2": "olive oil",
-// "strMeasure2": "1/4 cup",
-// "strIngredient3": "garlic",
-// "strMeasure3": "3 cloves",
-// "strIngredient4": "chopped tomatoes",
-// "strMeasure4": "1 tin",
-// "strIngredient5": "red chile flakes",
-// "strMeasure5": "1/2 teaspoon",
-// "strIngredient6": "italian seasoning",
-// "strMeasure6": "1/2 teaspoon",
-// "strIngredient7": "basil",
-// "strMeasure7": "6 leaves",
-// "strIngredient8": "Parmigiano-Reggiano",
-// "strMeasure8": "sprinkling",
-// "strIngredient9": "",
-// "strMeasure9": "",
-// "strIngredient10": "",
-// "strMeasure10": "",
-// "strIngredient11": "",
-// "strMeasure11": "",
-// "strIngredient12": "",
-// "strMeasure12": "",
-// "strIngredient13": "",
-// "strMeasure13": "",
-// "strIngredient14": "",
-// "strMeasure14": "",
-// "strIngredient15": "",
-// "strMeasure15": "",
-// "strIngredient16": "",
-// "strMeasure16": "",
-// "strIngredient17": "",
-// "strMeasure17": "",
-// "strIngredient18": "",
-// "strMeasure18": "",
-// "strIngredient19": "",
-// "strMeasure19": "",
-// "strIngredient20": "",
-// "strMeasure20": ""
-// }
-// """
-//	let dummyMeal: Meal
-//	if let jsonData = json.data(using: .utf8) {
-//		dummyMeal = try! JSONDecoder().decode(Meal.self, from: jsonData)
-//	} else {
-//		fatalError("Invalid JSON")
-//	}
-//	return MealDetailView(meal: dummyMeal)
-//}

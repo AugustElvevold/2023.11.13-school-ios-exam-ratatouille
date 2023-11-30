@@ -11,52 +11,103 @@ import SwiftData
 struct AddMealView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(\.dismiss) private var dismiss
-	
-	@State private var name: String = ""
-	@State private var category: String = ""
-	@State private var area: String = ""
-	@State private var instructions: String = ""
+	@State private var newMeal: Meal = Meal()
 	@State private var thumbNailURL: String = ""
-	@State private var youtubeLink: String = ""
-	@State private var recipeSourceURL: String = ""
 	@State private var ingredientEntries: [( ingredient: String, measure: String)] = []
+	@State private var showAlert: Bool = false
 	
-	private var isFormEdited: Bool {
-		!name.isEmpty || !category.isEmpty || !area.isEmpty ||
-		!instructions.isEmpty || !thumbNailURL.isEmpty ||
-		!youtubeLink.isEmpty || !recipeSourceURL.isEmpty ||
-		!ingredientEntries.allSatisfy { $0.ingredient.isEmpty && $0.measure.isEmpty }
+	private var isRequiredFieldsAdded: Bool {
+		!newMeal.name.isEmpty || !newMeal.instructions.isEmpty || !ingredientEntries.allSatisfy { $0.ingredient.isEmpty && $0.measure.isEmpty } 
 	}
 	
 	var body: some View {
-		Form {
-			Section(header: Text("Måltid")) {
-				TextField("Navn", text: $name)
-				TextField("Kategori", text: $category)
-				TextField("Land", text: $area)
-				TextField("Instrukser", text: $instructions)
-				TextField("Bilde URL", text: $thumbNailURL)
-				TextField("YouTube URL", text: $youtubeLink)
-				TextField("Kilde URL", text: $recipeSourceURL)
-			}
-			
-			Section(header: Text("Ingredienser")) {
-				ForEach(0..<ingredientEntries.count, id: \.self) { index in
-					HStack {
-						TextField("Ingrediens", text: self.$ingredientEntries[index].ingredient)
-						TextField("Mål", text: self.$ingredientEntries[index].measure)
-					}
+		NavigationStack{
+			Form {
+				Section {
+					TextField("Navn", text: $newMeal.name)
+					TextField("Kategori", text: $newMeal.category)
+					//					TextField("Land", text: $newMeal.area.name)
+					TextField("Land", text: $newMeal.area)
+				} header: {
+					Text("Måltid")
 				}
-				.onDelete(perform: removeIngredients)
+					Section{
+						ZStack(alignment: .topLeading) {
+							if newMeal.instructions.isEmpty {
+								Text("Skriv inn instrukser her...")
+									.foregroundColor(.gray.opacity(0.5))
+									.padding(.top, 8)
+									.padding(.leading, 4)
+							}
+							TextEditor(text: $newMeal.instructions)
+								.frame(minHeight: 60)
+						}
+					} header: {
+						Text("Instrukser")
+					}
+				Section{
+					TextField("Bilde URL", text: $thumbNailURL)
+					TextField("YouTube URL", text: $newMeal.linkYoutube)
+					TextField("Kilde URL", text: $newMeal.linkSource)
+				} header: {
+					Text("Måltid")
+				}
 				
-				Button(action: addIngredient) {
-					Text("Legg til ingrediens")
+				Section {
+					ForEach(0..<ingredientEntries.count, id: \.self) { index in
+						HStack {
+							TextField("Ingrediens", text: self.$ingredientEntries[index].ingredient)
+							TextField("Mål", text: self.$ingredientEntries[index].measure)
+						}
+					}
+					.onDelete(perform: removeIngredients)
+					
+					Button(action: addIngredient) {
+						Text("Legg til ingrediens")
+					}
+				} header: {
+					Text("Ingredienser")
 				}
 			}
 		}
-		.navigationBarItems(trailing: Button("Lagre") {
-			saveMeal()
-		}.disabled(!isFormEdited))
+		.toolbar(content: {
+			ToolbarItem(placement: .cancellationAction){
+				Button("Avbryt", role: .cancel){
+					dismiss()
+				}
+			}
+			ToolbarItem(placement: .confirmationAction){
+				Button(action: {
+					saveMeal()
+					dismiss()
+				}, label: {
+					Text("Lagre")
+				})
+				.disabled(!isRequiredFieldsAdded)
+			}
+		})
+		.navigationBarBackButtonHidden()
+		.alert(isPresented: $showAlert) {
+			Alert(
+				title: Text("Feil"),
+				message: Text(missingFieldsMessage()),
+				dismissButton: .default(Text("OK")))
+		}
+	}
+	private func missingFieldsMessage() -> String {
+		var missingFields = [String]()
+		
+		if newMeal.name.isEmpty {
+			missingFields.append("navn")
+		}
+		if newMeal.instructions.isEmpty {
+			missingFields.append("instruksjoner")
+		}
+		if ingredientEntries.allSatisfy({ $0.ingredient.isEmpty && $0.measure.isEmpty }) {
+			missingFields.append("ingredienser")
+		}
+		
+		return missingFields.isEmpty ? "" : "Mangler påkrevde felter: " + missingFields.joined(separator: ", ")
 	}
 	
 	private func addIngredient() {
@@ -70,42 +121,17 @@ struct AddMealView: View {
 	}
 	
 	private func saveMeal() {
-		let meal = Meal()
-		
-		// Only set attributes if they have been provided, otherwise the default value in Meal init will be used
-		if !name.isEmpty {
-			meal.name = name
-		}
-		if !category.isEmpty {
-			meal.strCategory = category
-		}
-		if !area.isEmpty {
-			meal.strArea = area
-		}
-		if !instructions.isEmpty {
-			meal.strInstructions = instructions
-		}
-		if !thumbNailURL.isEmpty {
-			meal.strMealThumb = thumbNailURL
-		}
-		if !youtubeLink.isEmpty {
-			meal.strYoutube = youtubeLink
-		}
-		if !recipeSourceURL.isEmpty {
-			meal.strSource = recipeSourceURL
-		}
-		
-		// Convert ingredientEntries to the required format
-		meal.ingredients = ingredientEntries.filter { !$0.ingredient.isEmpty && !$0.measure.isEmpty }
+		newMeal.image = URL(string: thumbNailURL) ?? Missing.imageUrl
+		newMeal.saved = true
+		newMeal.ingredients  = ingredientEntries.filter { !$0.ingredient.isEmpty && !$0.measure.isEmpty }
 			.map { [$0.ingredient, $0.measure] }
-		meal.saved = true
-		// Add meal to database
-		modelContext.insert(meal)
+
+		modelContext.insert(newMeal)
 		dismiss()
 	}
 }
 
-#Preview {
-    AddMealView()
-		.modelContainer(for: Meal.self)
-}
+//#Preview {
+//    AddMealView()
+//		.modelContainer(for: Meal.self)
+//}

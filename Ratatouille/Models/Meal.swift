@@ -8,18 +8,24 @@
 import Foundation
 import SwiftData
 
+class Missing {
+	static let imageUrl = URL(string: "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg")!
+	static let youtubeUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+}
+
 @Model
 final class Meal: Decodable, Identifiable {
 	@Attribute(.unique) var uuid: UUID
 	var id: String
 	var name: String
-	var strCategory: String
-	var strArea: String
-	var strInstructions: String
-	var strMealThumb: String
-	var strYoutube: String
+	var category: String
+//	var area: AreaModel
+	var area: String
+	var instructions: String
+	var image: URL
+	var linkYoutube: String
 	var ingredients: [[String]]
-	var strSource: String
+	var linkSource: String
 	var saved: Bool
 	var updatedDate: Date
 	var createdDate: Date
@@ -32,21 +38,22 @@ final class Meal: Decodable, Identifiable {
 		strCategory: String = "",
 		strArea: String = "",
 		strInstructions: String = "",
-		strMealThumb: String = "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
-		strYoutube: String = "",
+		strMealThumb: URL = Missing.imageUrl,
+		strYoutube: String = Missing.youtubeUrl,
 		ingredients: [[String]] = [],
 		strSource: String = ""
 	) {
 		self.uuid = UUID()
 		self.id = id
 		self.name = name
-		self.strCategory = strCategory
-		self.strArea = strArea
-		self.strInstructions = strInstructions
-		self.strMealThumb = strMealThumb
-		self.strYoutube = strYoutube
+		self.category = strCategory
+//		self.area = AreaManager.shared.findOrCreateArea(named: strArea)
+		self.area = strArea
+		self.instructions = strInstructions
+		self.image = strMealThumb
+		self.linkYoutube = strYoutube
 		self.ingredients = ingredients
-		self.strSource = strSource
+		self.linkSource = strSource
 		self.saved = false
 		self.updatedDate = .now
 		self.createdDate = .now
@@ -67,12 +74,14 @@ final class Meal: Decodable, Identifiable {
 		
 		id = try container.decode(String.self, forKey: .id)
 		name = try container.decode(String.self, forKey: .name)
-		strCategory = try container.decodeIfPresent(String.self, forKey: .strCategory) ?? "Unknown Category"
-		strArea = try container.decodeIfPresent(String.self, forKey: .strArea) ?? "Unknown Area"
-		strInstructions = try container.decodeIfPresent(String.self, forKey: .strInstructions) ?? "No Instructions"
-		strMealThumb = try container.decodeIfPresent(String.self, forKey: .strMealThumb) ?? "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg"
-		strYoutube = try container.decodeIfPresent(String.self, forKey: .strYoutube) ?? ""
-		strSource = try container.decodeIfPresent(String.self, forKey: .strSource) ?? ""
+		category = try container.decodeIfPresent(String.self, forKey: .strCategory) ?? ""
+//		let areaName = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
+//		area = AreaManager.shared.findOrCreateArea(named: areaName)
+		area = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
+		instructions = try container.decodeIfPresent(String.self, forKey: .strInstructions) ?? ""
+		image = try container.decodeIfPresent(URL.self, forKey: .strMealThumb) ?? Missing.imageUrl
+		linkYoutube = try container.decodeIfPresent(String.self, forKey: .strYoutube) ?? Missing.youtubeUrl
+		linkSource = try container.decodeIfPresent(String.self, forKey: .strSource) ?? ""
 		
 		var tempIngredients: [[String]] = []
 		for i in 1...20 {

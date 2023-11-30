@@ -11,9 +11,9 @@ import SwiftData
 struct ContentView: View {
 	@Environment(\.modelContext) private var modelContext
 	@EnvironmentObject var searchViewModel: SearchViewModel
+	@EnvironmentObject var settingViewModel: SettingsViewModel
 	@EnvironmentObject var tabSelection: TabSelection
 	@EnvironmentObject var csManager: ColorSchemeManager
-//	@Query private var items: [Item]
 	
 	var body: some View {
 		TabView(selection: $tabSelection.selectedTab) {
@@ -34,6 +34,7 @@ struct ContentView: View {
 				}
 				.tag(TabSelection.Tab.settings)
 				.environmentObject(csManager)
+				.environmentObject(settingViewModel)
 		}
 	}
 }
@@ -41,9 +42,10 @@ struct ContentView: View {
 #Preview {
 	ContentView()
 		.environmentObject(SearchViewModel())
-		.modelContainer(for: Meal.self)
+		.modelContainer(for: [Meal.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
 		.environmentObject(TabSelection())
 		.environmentObject(ColorSchemeManager())
+		.environmentObject(SettingsViewModel())
 //	Removes all data from the database after stopping the preview
 //		.modelContainer(for: Meal.self, inMemory: true)
 }

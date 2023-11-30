@@ -12,41 +12,48 @@ struct EditMealView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(\.dismiss) private var dismiss
 	
-	@Bindable var meal: Meal
-	
-	@State private var name: String = ""
-	@State private var strCategory: String = ""
-	@State private var strArea: String = ""
-	@State private var strInstructions: String = ""
-	@State private var strMealThumb: String = ""
-	@State private var strYoutube: String = ""
-	@State private var strSource: String = ""
-	@State private var ingredients: [( ingredient: String, measure: String)] = []
-	
-	private var isFormEdited: Bool {
-		!name.isEmpty || !strCategory.isEmpty || !strArea.isEmpty ||
-		!strInstructions.isEmpty || !strMealThumb.isEmpty ||
-		!strYoutube.isEmpty || !strSource.isEmpty ||
-		!ingredients.allSatisfy { $0.ingredient.isEmpty && $0.measure.isEmpty }
-	}
-	
+	var meal: Meal
+	@State private var updatedMeal: Meal = Meal()
+	@State private var stringUrl: String = ""
+	@State private var ingredientEntries: [( ingredient: String, measure: String)] = []
+
 	var body: some View {
 		Form {
-			Section(header: Text("Måltid")) {
-				TextField("Navn", text: $name)
-				TextField("Kategori", text: $strCategory)
-				TextField("Land", text: $strArea)
-				TextField("Instrukser", text: $strInstructions)
-				TextField("Bilde URL", text: $strMealThumb)
-				TextField("YouTube URL", text: $strYoutube)
-				TextField("Kilde URL", text: $strSource)
+			Section{
+				TextField("Navn", text: $updatedMeal.name)
+				TextField("Kategori", text: $updatedMeal.category)
+				//				TextField("Land", text: $updatedMeal.area.name)
+				TextField("Land", text: $updatedMeal.area)
+			} header: {
+				Text("Måltid")
+			}
+				Section{
+					ZStack(alignment: .topLeading) {
+						if updatedMeal.instructions.isEmpty {
+							Text("Skriv inn instrukser her...")
+								.foregroundColor(.gray.opacity(0.5))
+								.padding(.top, 8)
+								.padding(.leading, 4)
+						}
+						TextEditor(text: $updatedMeal.instructions)
+							.frame(minHeight: 60)
+					}
+				} header: {
+					Text("Instrukser")
+				}
+			Section{
+				TextField("Bilde URL", text: $stringUrl)
+				TextField("YouTube URL", text: $updatedMeal.linkYoutube)
+				TextField("Kilde URL", text: $updatedMeal.linkSource)
+			} header: {
+				Text("Lenker")
 			}
 			
 			Section(header: Text("Ingredienser")) {
-				ForEach($ingredients.indices, id: \.self) { index in
+				ForEach($ingredientEntries.indices, id: \.self) { index in
 					HStack {
-						TextField("Ingrediens", text: $ingredients[index].ingredient)
-						TextField("Mål", text: $ingredients[index].measure)
+						TextField("Ingrediens", text: $ingredientEntries[index].ingredient)
+						TextField("Mål", text: $ingredientEntries[index].measure)
 					}
 				}
 				.onDelete(perform: removeIngredients)
@@ -54,41 +61,54 @@ struct EditMealView: View {
 				Button("Legg til ingrediens", action: addIngredient)
 			}
 		}
-		.navigationBarItems(trailing: Button("Lagre") {
-			updateMeal()
-		})
 		.onAppear(){
-			// Update the local state with the meal data
-			name = meal.name
-			strCategory = meal.strCategory
-			strArea = meal.strArea
-			strInstructions = meal.strInstructions
-			strMealThumb = meal.strMealThumb
-			strYoutube = meal.strYoutube
-			strSource = meal.strSource
-			ingredients = meal.ingredients.map { (ingredient: $0[0], measure: $0[1]) }
+			updatedMeal.name = meal.name
+			updatedMeal.category = meal.category
+			updatedMeal.area = meal.area
+			updatedMeal.instructions = meal.instructions
+			updatedMeal.linkYoutube = meal.linkYoutube
+			updatedMeal.linkSource = meal.linkSource
+			ingredientEntries = meal.ingredients.map { (ingredient: $0[0], measure: $0[1]) }
 		}
+		.toolbar(content: {
+			ToolbarItem(placement: .cancellationAction){
+				Button("Avbryt", role: .cancel){
+					dismiss()
+				}
+			}
+			ToolbarItem(placement: .confirmationAction){
+				Button(action: {
+					updateMeal()
+					dismiss()
+				}, label: {
+					Text("Lagre")
+				})
+				.disabled(updatedMeal.name.isEmpty || (updatedMeal.name == meal.name && updatedMeal.instructions == meal.instructions && updatedMeal.category == meal.category && updatedMeal.area == meal.area && updatedMeal.linkYoutube == meal.linkYoutube && updatedMeal.linkSource == meal.linkSource && updatedMeal.ingredients == meal.ingredients && URL(string: stringUrl) == meal.image))
+			}
+		})
+		.navigationBarBackButtonHidden()
 	}
 	
 	private func addIngredient() {
-		meal.ingredients.append(["", ""])
+		updatedMeal.ingredients.append(["", ""])
 	}
 	
 	private func removeIngredients(at offsets: IndexSet) {
-		meal.ingredients.remove(atOffsets: offsets)
+		updatedMeal.ingredients.remove(atOffsets: offsets)
 	}
 	
 	private func updateMeal() {
-//		meal.edited = true
+		meal.name = updatedMeal.name
+		meal.category = updatedMeal.category
+//		meal.area.name = updatedMeal.area.name
+		meal.area = updatedMeal.area
+		meal.instructions = updatedMeal.instructions
+		meal.image = URL(string: stringUrl) ?? Missing.imageUrl
+		meal.linkYoutube = updatedMeal.linkYoutube
+		meal.linkSource = updatedMeal.linkSource
+		meal.ingredients = ingredientEntries.filter { !$0.ingredient.isEmpty && !$0.measure.isEmpty }
+			.map { [$0.ingredient, $0.measure] }
 		meal.updatedDate = .now
-		meal.name = name
-		meal.strCategory = strCategory
-		meal.strArea = strArea
-		meal.strInstructions = strInstructions
-		meal.strMealThumb = strMealThumb
-		meal.strYoutube = strYoutube
-		meal.strSource = strSource
-		meal.ingredients = ingredients.map { [$0.ingredient, $0.measure] }
 		dismiss()
 	}
 }

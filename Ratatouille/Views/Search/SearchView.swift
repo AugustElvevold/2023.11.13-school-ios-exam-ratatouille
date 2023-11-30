@@ -49,7 +49,7 @@ struct SearchView: View {
 							}
 						}
 					}
-					.background(Color(UIColor.systemBackground))
+					.background(Color(UIColor.secondarySystemBackground))
 					.cornerRadius(14)
 					.padding(.bottom, 4)
 					
@@ -82,14 +82,13 @@ struct SearchView: View {
 							.font(.caption)
 					}
 				} else {
-					// Results list
 					if !viewModel.meals.isEmpty && !viewModel.noResults {
 						List(viewModel.meals, id: \.uuid) { meal in
-								NavigationLink(destination: MealDetailView(meal: meal)){
-									MealRowView(meal: meal, savedMeals: savedMeals)
+							NavigationLink(destination: MealDetailView(meal: meal, isSearchResult: true, alreadySavedMeal: isMealSaved(mealID: meal.id))){
+								MealRowView(meal: meal, alreadySavedMeal: isMealSaved(mealID: meal.id), savedMealArchived: isMealArchived(mealID: meal.id))
 								}
-							
 						}
+						.listStyle(.plain)
 					} else {
 						if viewModel.meals.isEmpty && viewModel.noResults{
 							ContentUnavailableView("🤷🏼‍♂️Ingen resultater", systemImage: "magnifyingglass")
@@ -100,9 +99,20 @@ struct SearchView: View {
 					}
 				}
 			}
-			.background(Color(UIColor.secondarySystemBackground))
-			//.background(Color(UIColor.systemBackground))
+//			.background(Color(UIColor.secondarySystemBackground))
+			.background(Color(UIColor.systemBackground))
 		}
+	}
+	func isMealSaved(mealID: String) -> Bool {
+		// Check if the meal exists and hasn't been updated since creation
+		return savedMeals.contains { $0.id == mealID && $0.updatedDate == $0.createdDate }
+	}
+	func isMealArchived(mealID: String) -> Bool {
+		// Check if the meal is saved and archived
+		guard let matchedMeal = savedMeals.first(where: { $0.id == mealID }) else {
+			return false
+		}
+		return matchedMeal.archived
 	}
 	private func debounceSearch(immediate: Bool) {
 		// Cancel the previous task if it exists
@@ -141,39 +151,31 @@ struct SearchView: View {
 
 struct MealRowView: View {
 	@Environment(\.modelContext) private var modelContext
-//	@State private var animateIn = false
 	@State var meal: Meal
-	@State var savedMeals: [Meal]
-	
-	@State private var alreadySavedMeal = false
-	@State private var savedMealArchived = false
+	@State var alreadySavedMeal = false
+	@State var savedMealArchived = false
 	
 	var body: some View {
 		HStack {
-			// Image
-			if !meal.strMealThumb.isEmpty, let url = URL(string: meal.strMealThumb) {
-				AsyncImage(url: url) { image in
+				AsyncImage(url: meal.image) { image in
 					image.resizable()
 				} placeholder: {
 					Color.gray.frame(width: 80, height: 80)
 				}
 				.frame(width: 80, height: 80)
 				.cornerRadius(10)
-			} else {
-				Color.gray.frame(width: 80, height: 80)
-					.cornerRadius(10)
-			}
 			
 			// Text Content
 			VStack(alignment: .leading, spacing: 4) {
 				Text(meal.name)
 					.font(.headline)
 					.lineLimit(/*@START_MENU_TOKEN@*/2/*@END_MENU_TOKEN@*/)
-				Text(meal.strCategory)
+				Text(meal.category)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-				Text(meal.strArea)
+//				Text(meal.area.name)
+				Text(meal.area)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
@@ -206,28 +208,19 @@ struct MealRowView: View {
 				.tint(.gray)
 			}
 		}
-		.onAppear(){
-			alreadySavedMeal = isMealSaved(mealID: meal.id)
-			savedMealArchived = isMealArchived(mealID: meal.id)
-		}
-//		.offset(x: animateIn ? 0 : -UIScreen.main.bounds.width, y: 0)
-//		.onAppear {
-//			withAnimation(.easeOut(duration: 0.5)) {
-//				animateIn = true
-//			}
-//		}
 	}
 	func saveMeal(meal: Meal) {
 		let meal = Meal(
 			id: meal.id,
 			name: meal.name,
-			strCategory: meal.strCategory,
-			strArea: meal.strArea,
-			strInstructions: meal.strInstructions,
-			strMealThumb: meal.strMealThumb,
-			strYoutube: meal.strYoutube,
+			strCategory: meal.category,
+//			strArea: meal.area.name,
+			strArea: meal.area,
+			strInstructions: meal.instructions,
+			strMealThumb: meal.image,
+			strYoutube: meal.linkYoutube,
 			ingredients: meal.ingredients,
-			strSource: meal.strSource
+			strSource: meal.linkSource
 		)
 		let time = Date.now
 		meal.createdDate = time
@@ -236,16 +229,5 @@ struct MealRowView: View {
 		modelContext.insert(meal)
 		try? modelContext.save()
 		alreadySavedMeal = true
-	}
-	func isMealSaved(mealID: String) -> Bool {
-		// Check if the meal exists and hasn't been updated since creation
-		return savedMeals.contains { $0.id == mealID && $0.updatedDate == $0.createdDate }
-	}
-	func isMealArchived(mealID: String) -> Bool {
-		// Check if the meal is saved and archived
-		guard let matchedMeal = savedMeals.first(where: { $0.id == mealID }) else {
-			return false
-		}
-		return matchedMeal.archived
 	}
 }

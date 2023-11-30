@@ -23,6 +23,7 @@ struct RatatouilleApp: App {
 //        } 
 //    }()
 	@StateObject var searchViewModel = SearchViewModel()
+	@StateObject var settingViewModel = SettingsViewModel()
 	@StateObject var csManager = ColorSchemeManager()
 	@StateObject var tabSelection = TabSelection()
 
@@ -32,10 +33,11 @@ struct RatatouilleApp: App {
 						.environmentObject(csManager)
 						.environmentObject(tabSelection)
 						.environmentObject(searchViewModel)
+						.environmentObject(settingViewModel)
 						.onAppear(){
 							csManager.applyColorScheme()
 						}
         }
-				.modelContainer(for: Meal.self)
+				.modelContainer(for: [Meal.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
     }
 }
