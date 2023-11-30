@@ -174,8 +174,8 @@ struct MealRowView: View {
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-//				Text(meal.area.name)
-				Text(meal.area)
+				Text(meal.area.name)
+//				Text(meal.area)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
@@ -214,8 +214,8 @@ struct MealRowView: View {
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.category,
-//			strArea: meal.area.name,
-			strArea: meal.area,
+			strArea: meal.area.name,
+//			strArea: meal.area,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
 			strYoutube: meal.linkYoutube,
