@@ -33,8 +33,8 @@ struct MealDetailView: View {
 						.fontWeight(.bold)
 					
 					Text("Kategori: \(meal.category)")
-//					Text("Land: \(meal.area.name)")
-					Text("Land: \(meal.area)")
+					Text("Land: \(meal.area.name)")
+//					Text("Land: \(meal.area)")
 					Text("Instruksjoner:")
 						.fontWeight(.bold)
 						.font(.headline)
@@ -120,8 +120,8 @@ struct MealDetailView: View {
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.category,
-			//			strArea: meal.area.name,
-			strArea: meal.area,
+			strArea: meal.area.name,
+//			strArea: meal.area,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
 			strYoutube: meal.linkYoutube,

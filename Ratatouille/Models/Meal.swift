@@ -19,8 +19,8 @@ final class Meal: Decodable, Identifiable {
 	var id: String
 	var name: String
 	var category: String
-//	var area: AreaModel
-	var area: String
+	var area: AreaModel
+//	var area: String
 	var instructions: String
 	var image: URL
 	var linkYoutube: String
@@ -47,8 +47,8 @@ final class Meal: Decodable, Identifiable {
 		self.id = id
 		self.name = name
 		self.category = strCategory
-//		self.area = AreaManager.shared.findOrCreateArea(named: strArea)
-		self.area = strArea
+		self.area = AreaManager.shared.findOrCreateArea(named: strArea)
+//		self.area = strArea
 		self.instructions = strInstructions
 		self.image = strMealThumb
 		self.linkYoutube = strYoutube
@@ -75,9 +75,9 @@ final class Meal: Decodable, Identifiable {
 		id = try container.decode(String.self, forKey: .id)
 		name = try container.decode(String.self, forKey: .name)
 		category = try container.decodeIfPresent(String.self, forKey: .strCategory) ?? ""
-//		let areaName = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
-//		area = AreaManager.shared.findOrCreateArea(named: areaName)
-		area = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
+		let areaName = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
+		area = AreaManager.shared.findOrCreateArea(named: areaName)
+//		area = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
 		instructions = try container.decodeIfPresent(String.self, forKey: .strInstructions) ?? ""
 		image = try container.decodeIfPresent(URL.self, forKey: .strMealThumb) ?? Missing.imageUrl
 		linkYoutube = try container.decodeIfPresent(String.self, forKey: .strYoutube) ?? Missing.youtubeUrl

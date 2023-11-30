@@ -22,8 +22,8 @@ struct EditMealView: View {
 			Section{
 				TextField("Navn", text: $updatedMeal.name)
 				TextField("Kategori", text: $updatedMeal.category)
-				//				TextField("Land", text: $updatedMeal.area.name)
-				TextField("Land", text: $updatedMeal.area)
+//				TextField("Land", text: $updatedMeal.area)
+				TextField("Land", text: $updatedMeal.area.name)
 			} header: {
 				Text("Måltid")
 			}
@@ -83,7 +83,7 @@ struct EditMealView: View {
 				}, label: {
 					Text("Lagre")
 				})
-				.disabled(updatedMeal.name.isEmpty || (updatedMeal.name == meal.name && updatedMeal.instructions == meal.instructions && updatedMeal.category == meal.category && updatedMeal.area == meal.area && updatedMeal.linkYoutube == meal.linkYoutube && updatedMeal.linkSource == meal.linkSource && updatedMeal.ingredients == meal.ingredients && URL(string: stringUrl) == meal.image))
+				.disabled(updatedMeal.name.isEmpty || (updatedMeal.name == meal.name && updatedMeal.instructions == meal.instructions && updatedMeal.category == meal.category && updatedMeal.area.name == meal.area.name && updatedMeal.linkYoutube == meal.linkYoutube && updatedMeal.linkSource == meal.linkSource && updatedMeal.ingredients == meal.ingredients && URL(string: stringUrl) == meal.image))
 			}
 		})
 		.navigationBarBackButtonHidden()
@@ -100,8 +100,8 @@ struct EditMealView: View {
 	private func updateMeal() {
 		meal.name = updatedMeal.name
 		meal.category = updatedMeal.category
-//		meal.area.name = updatedMeal.area.name
-		meal.area = updatedMeal.area
+		meal.area.name = updatedMeal.area.name
+//		meal.area = updatedMeal.area
 		meal.instructions = updatedMeal.instructions
 		meal.image = URL(string: stringUrl) ?? Missing.imageUrl
 		meal.linkYoutube = updatedMeal.linkYoutube

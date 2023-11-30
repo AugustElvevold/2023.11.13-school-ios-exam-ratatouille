@@ -31,8 +31,8 @@ final class AreaModel: Decodable, Identifiable {
 		updateFlagUrl()
 	}
 	
-//	@Relationship(deleteRule: .nullify, inverse: \Meal.area)
-//	var meals: [Meal]?
+	@Relationship(deleteRule: .nullify, inverse: \Meal.area)
+	var meals: [Meal]?
 	
 	func updateFlagUrl() {
 		if (countryCode.count == 2 ){
