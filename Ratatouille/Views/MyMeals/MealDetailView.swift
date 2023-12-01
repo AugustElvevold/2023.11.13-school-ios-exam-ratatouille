@@ -32,9 +32,9 @@ struct MealDetailView: View {
 						.font(.title)
 						.fontWeight(.bold)
 					
-					Text("Kategori: \(meal.category)")
-					Text("Land: \(meal.area.name)")
-//					Text("Land: \(meal.area)")
+					Text("Kategori: \(meal.strCategory)")
+//					Text("Land: \(meal.strArea.name)")
+					Text("Land: \(meal.strArea)")
 					Text("Instruksjoner:")
 						.fontWeight(.bold)
 						.font(.headline)
@@ -119,9 +119,9 @@ struct MealDetailView: View {
 		let meal = Meal(
 			id: meal.id,
 			name: meal.name,
-			strCategory: meal.category,
-			strArea: meal.area.name,
-//			strArea: meal.area,
+			strCategory: meal.strCategory,
+			//			strArea: meal.strArea.name,
+			strArea: meal.strArea,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
 			strYoutube: meal.linkYoutube,

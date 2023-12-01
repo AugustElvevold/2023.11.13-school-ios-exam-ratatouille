@@ -21,9 +21,9 @@ struct EditMealView: View {
 		Form {
 			Section{
 				TextField("Navn", text: $updatedMeal.name)
-				TextField("Kategori", text: $updatedMeal.category)
-//				TextField("Land", text: $updatedMeal.area)
-				TextField("Land", text: $updatedMeal.area.name)
+				TextField("Kategori", text: $updatedMeal.strCategory)
+				//				TextField("Land", text: $updatedMeal.strArea.name)
+				TextField("Land", text: $updatedMeal.strArea)
 			} header: {
 				Text("Måltid")
 			}
@@ -63,8 +63,8 @@ struct EditMealView: View {
 		}
 		.onAppear(){
 			updatedMeal.name = meal.name
-			updatedMeal.category = meal.category
-			updatedMeal.area = meal.area
+			updatedMeal.strCategory = meal.strCategory
+			updatedMeal.strArea = meal.strArea
 			updatedMeal.instructions = meal.instructions
 			updatedMeal.linkYoutube = meal.linkYoutube
 			updatedMeal.linkSource = meal.linkSource
@@ -83,7 +83,7 @@ struct EditMealView: View {
 				}, label: {
 					Text("Lagre")
 				})
-				.disabled(updatedMeal.name.isEmpty || (updatedMeal.name == meal.name && updatedMeal.instructions == meal.instructions && updatedMeal.category == meal.category && updatedMeal.area.name == meal.area.name && updatedMeal.linkYoutube == meal.linkYoutube && updatedMeal.linkSource == meal.linkSource && updatedMeal.ingredients == meal.ingredients && URL(string: stringUrl) == meal.image))
+				.disabled(updatedMeal.name.isEmpty || (updatedMeal.name == meal.name && updatedMeal.instructions == meal.instructions && updatedMeal.strCategory == meal.strCategory && updatedMeal.strArea == meal.strArea && updatedMeal.linkYoutube == meal.linkYoutube && updatedMeal.linkSource == meal.linkSource && updatedMeal.ingredients == meal.ingredients && URL(string: stringUrl) == meal.image))
 			}
 		})
 		.navigationBarBackButtonHidden()
@@ -99,9 +99,9 @@ struct EditMealView: View {
 	
 	private func updateMeal() {
 		meal.name = updatedMeal.name
-		meal.category = updatedMeal.category
-		meal.area.name = updatedMeal.area.name
-//		meal.area = updatedMeal.area
+		meal.strCategory = updatedMeal.strCategory
+//		meal.strArea.name = updatedMeal.strArea.name
+		meal.strArea = updatedMeal.strArea
 		meal.instructions = updatedMeal.instructions
 		meal.image = URL(string: stringUrl) ?? Missing.imageUrl
 		meal.linkYoutube = updatedMeal.linkYoutube

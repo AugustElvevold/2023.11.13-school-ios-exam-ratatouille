@@ -25,9 +25,9 @@ struct AddMealView: View {
 			Form {
 				Section {
 					TextField("Navn", text: $newMeal.name)
-					TextField("Kategori", text: $newMeal.category)
-					TextField("Land", text: $newMeal.area.name)
-//					TextField("Land", text: $newMeal.area)
+					TextField("Kategori", text: $newMeal.strCategory)
+					//					TextField("Land", text: $newMeal.strArea.name)
+					TextField("Land", text: $newMeal.strArea)
 				} header: {
 					Text("Måltid")
 				}

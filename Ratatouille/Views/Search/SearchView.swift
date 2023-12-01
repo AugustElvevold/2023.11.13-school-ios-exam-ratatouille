@@ -170,12 +170,12 @@ struct MealRowView: View {
 				Text(meal.name)
 					.font(.headline)
 					.lineLimit(/*@START_MENU_TOKEN@*/2/*@END_MENU_TOKEN@*/)
-				Text(meal.category)
+				Text(meal.strCategory)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-				Text(meal.area.name)
-//				Text(meal.area)
+//				Text(meal.strArea.name)
+				Text(meal.strArea)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
@@ -213,9 +213,9 @@ struct MealRowView: View {
 		let meal = Meal(
 			id: meal.id,
 			name: meal.name,
-			strCategory: meal.category,
-			strArea: meal.area.name,
-//			strArea: meal.area,
+			strCategory: meal.strCategory,
+//			strArea: meal.strArea.name,
+			strArea: meal.strArea,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
 			strYoutube: meal.linkYoutube,
