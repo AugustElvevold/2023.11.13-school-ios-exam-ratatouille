@@ -17,6 +17,9 @@ final class CategoryModel: Decodable, Identifiable {
 	var categoryThumb: URL
 	var archived: Bool
 	
+	@Relationship(deleteRule: .nullify, inverse: \Meal.category)
+	var meals: [Meal]?
+	
 	init(
 		_ id: String = "",
 		_ name: String = "",

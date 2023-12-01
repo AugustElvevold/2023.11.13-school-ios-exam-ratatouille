@@ -18,6 +18,9 @@ final class AreaModel: Decodable, Identifiable {
 	var flagUrl: URL
 	var archived: Bool
 	
+	@Relationship(deleteRule: .nullify, inverse: \Meal.category)
+	var meals: [Meal]?
+	
 	init(
 		_ name: String = "",
 		_ countryCode: String = ""
