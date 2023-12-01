@@ -2,7 +2,7 @@
 //  SettingsViewModel.swift
 //  Ratatouille
 //
-//  Created by August Elvevold on 28/11/2023.
+//  Created by Kandidatnr: 2003 on 28/11/2023.
 //
 
 import Foundation

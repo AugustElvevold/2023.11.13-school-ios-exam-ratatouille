@@ -2,7 +2,7 @@
 //  AreaModel.swift
 //  Ratatouille
 //
-//  Created by August Elvevold on 29/11/2023.
+//  Created by Kandidatnr: 2003 on 29/11/2023.
 //
 
 import Foundation

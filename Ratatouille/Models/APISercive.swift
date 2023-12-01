@@ -2,7 +2,7 @@
 //  APISercive.swift
 //  Ratatouille
 //
-//  Created by August Elvevold on 20/11/2023.
+//  Created by Kandidatnr: 2003 on 20/11/2023.
 //
 
 import Foundation
@@ -10,8 +10,8 @@ import SwiftData
 
 struct APIString {
 	static let baseURL = "https://www.themealdb.com/api/json/v1/1/"
-//	static let categoryList = "\(baseURL)list.php?c=list" // For some reason is missing a few categories
-	static let categoryList = "\(baseURL)categories.php"
+	static let categoryListFull = "\(baseURL)categories.php"
+	static let categoryList = "\(baseURL)list.php?c=list" // For some reason is missing a few categories
 	static let areaList = "\(baseURL)list.php?a=list"
 	static let ingredientList = "\(baseURL)list.php?i=list"
 	static let search = "\(baseURL)search.php?s="
@@ -64,7 +64,7 @@ func APISerciveFetchIngredients() async -> [IngredientModel] {
 }
 
 func APIServiceFetchCategories() async -> [CategoryModel] {
-	let urlString = APIString.categoryList
+	let urlString = APIString.categoryListFull
 	let response: CategoriesResponse? = await fetchData(from: urlString)
 	return response?.categories ?? []
 }

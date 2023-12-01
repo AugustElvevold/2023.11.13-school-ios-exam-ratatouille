@@ -2,7 +2,7 @@
 //  ColorSchemeManager.swift
 //  Ratatouille
 //
-//  Created by August Elvevold on 27/11/2023.
+//  Created by Kandidatnr: 2003 on 27/11/2023.
 //
 
 import SwiftUI

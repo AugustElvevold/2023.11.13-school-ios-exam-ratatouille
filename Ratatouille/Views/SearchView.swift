@@ -292,7 +292,7 @@ struct CategorySearchView: View {
 	var body: some View {
 		NavigationStack{
 			List{
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Landområder"), label: {
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Landområder", apiString: APIString.searchByArea), label: {
 					HStack {
 						Image(systemName: "globe.europe.africa.fill")
 							.foregroundColor(.blue)
@@ -304,7 +304,7 @@ struct CategorySearchView: View {
 					.frame(height: 50)
 				})
 				
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Kategorier"), label: {
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: categories, title: "Kategorier", apiString: APIString.searchByCategory), label: {
 					HStack {
 						Image(systemName: "square.grid.2x2.fill")
 							.foregroundColor(.green)
@@ -316,7 +316,7 @@ struct CategorySearchView: View {
 					.frame(height: 50)
 				})
 				
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Ingredienser"), label: {
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: ingredients, title: "Ingredienser", apiString: APIString.searchByIngredient), label: {
 					HStack {
 						Image(systemName: "carrot.fill")
 							.foregroundColor(.orange)
@@ -354,6 +354,7 @@ struct CategorySearchListView: View {
 	var dismissParent: DismissAction
 	var categories: [String]
 	var title: String
+	var apiString: String
 	
 	var body: some View {
 		NavigationStack{
@@ -380,6 +381,6 @@ struct CategorySearchListView: View {
 	private func search(category: String) async {
 		dismiss()
 		dismissParent()
-		await searchViewModel.fetchMealsBy(category, APIString.searchByArea)
+		await searchViewModel.fetchMealsBy(category, apiString)
 	}
 }

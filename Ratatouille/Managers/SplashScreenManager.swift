@@ -2,7 +2,7 @@
 //  SplashScreenManager.swift
 //  Ratatouille
 //
-//  Created by August Elvevold on 01/12/2023.
+//  Created by Kandidatnr: 2003 on 01/12/2023.
 //
 
 import Foundation
