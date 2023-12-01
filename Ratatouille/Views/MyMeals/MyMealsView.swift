@@ -13,8 +13,8 @@ struct MyMealsView: View {
 	@EnvironmentObject var tabSelection: TabSelection
 	
 	@Query(
-		filter: #Predicate<Meal> { $0.archived == false }
-	) private var meals: [Meal] = [Meal]()
+		filter: #Predicate<MealModel> { $0.archived == false }
+	) private var meals: [MealModel] = [MealModel]()
 	
 	var body: some View {
 		NavigationStack {
@@ -52,11 +52,11 @@ struct MyMealsView: View {
 
 #Preview {
 	MyMealsView()
-		.modelContainer(for: Meal.self)
+		.modelContainer(for: MealModel.self)
 }
 
 struct MyMealRowView: View {
-	@State var meal: Meal
+	@State var meal: MealModel
 	
 	var body: some View {
 		HStack {
@@ -109,10 +109,10 @@ struct MyMealRowView: View {
 			.tint(meal.favorite ? .gray : .yellow)
 		}
 	}
-	private func toggleFavoriteMeal(_ meal: Meal) {
+	private func toggleFavoriteMeal(_ meal: MealModel) {
 		meal.favorite = !meal.favorite
 	}
-	private func archiveMeal(_ meal: Meal) {
+	private func archiveMeal(_ meal: MealModel) {
 		meal.archived = true
 	}
 }

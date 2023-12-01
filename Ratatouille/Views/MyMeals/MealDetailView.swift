@@ -10,7 +10,7 @@ import SwiftData
 
 struct MealDetailView: View {
 	@Environment(\.modelContext) private var modelContext
-	@Bindable var meal: Meal
+	@Bindable var meal: MealModel
 	var isSearchResult: Bool = false
 	@State var alreadySavedMeal = false
 	
@@ -115,8 +115,8 @@ struct MealDetailView: View {
 			}
 		}
 	}
-	func saveMeal(meal: Meal) {
-		let meal = Meal(
+	func saveMeal(meal: MealModel) {
+		let meal = MealModel(
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.strCategory,

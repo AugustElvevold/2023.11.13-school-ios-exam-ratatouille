@@ -10,6 +10,7 @@ import SwiftData
 
 struct ContentView: View {
 	@Environment(\.modelContext) private var modelContext
+	@EnvironmentObject var splashScreenManager: SplashScreenManager
 	@EnvironmentObject var searchViewModel: SearchViewModel
 	@EnvironmentObject var settingViewModel: SettingsViewModel
 	@EnvironmentObject var tabSelection: TabSelection
@@ -27,6 +28,7 @@ struct ContentView: View {
 					Label("Søk", systemImage: "magnifyingglass")
 				}
 				.environmentObject(searchViewModel)
+				.environmentObject(settingViewModel)
 				.tag(TabSelection.Tab.search)
 			SettingView()
 				.tabItem {
@@ -36,16 +38,24 @@ struct ContentView: View {
 				.environmentObject(csManager)
 				.environmentObject(settingViewModel)
 		}
+		.onAppear() {
+			DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+				withAnimation(.easeOut(duration: 1)) {
+					splashScreenManager.dismiss()
+				}
+			}
+		}
 	}
 }
 
 #Preview {
 	ContentView()
+		.environmentObject(SplashScreenManager())
 		.environmentObject(SearchViewModel())
-		.modelContainer(for: [Meal.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
 		.environmentObject(TabSelection())
 		.environmentObject(ColorSchemeManager())
 		.environmentObject(SettingsViewModel())
+		.modelContainer(for: [MealModel.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
 //	Removes all data from the database after stopping the preview
 //		.modelContainer(for: Meal.self, inMemory: true)
 }

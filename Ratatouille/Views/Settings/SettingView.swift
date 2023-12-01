@@ -27,38 +27,43 @@ struct SettingView: View {
 	) private var archivedAreas: [AreaModel] = [AreaModel]()
 	
 	@Query (
-		filter: #Predicate<Meal> { $0.archived == true },
-		sort: \Meal.createdDate, order: .forward, animation: .default
-	) private var archivedMeals: [Meal] = [Meal]()
+		filter: #Predicate<MealModel> { $0.archived == true },
+		sort: \MealModel.createdDate, order: .forward, animation: .default
+	) private var archivedMeals: [MealModel] = [MealModel]()
 	
 	var body: some View {
 		NavigationStack {
 			List {
-				NavigationLink(destination: AreaView()) {
-					HStack {
-						Image(systemName: "globe.europe.africa.fill")
-							.foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-						Text("Rediger landområder")
+				Section{
+					NavigationLink(destination: AreaView()) {
+						HStack {
+							Image(systemName: "globe.europe.africa.fill")
+								.foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+							Text("Landområder")
+						}
 					}
-				}
-				
-				NavigationLink(destination: CategoriesView()) {
-					HStack {
-						Image(systemName: "square.grid.2x2.fill")
-							.foregroundColor(.green)
-						Text("Rediger kategorier")
+					
+					NavigationLink(destination: CategoriesView()) {
+						HStack {
+							Image(systemName: "square.grid.2x2.fill")
+								.foregroundColor(.green)
+							Text("Kategorier")
+						}
 					}
-				}
-				
-				NavigationLink(destination: IngredientsView()) {
-					HStack {
-						Image(systemName: "carrot.fill")
-							.foregroundColor(.orange)
-						Text("Rediger ingredienser")
+					
+					NavigationLink(destination: IngredientsView()) {
+						HStack {
+							Image(systemName: "carrot.fill")
+								.foregroundColor(.orange)
+							Text("Ingredienser")
+						}
 					}
+				} header: {
+					Text("Rediger")
 				}
 				
 				Section{
+					// Denne vil ikke fungere på preview, test på emulator!
 					Picker("Tema", selection: $csManager.colorScheme) {
 						Text("Mørkt").tag(ColorScheme.dark)
 						Text("Lyst").tag(ColorScheme.light)
@@ -70,81 +75,99 @@ struct SettingView: View {
 				}
 				.padding(.horizontal, -14)
 				
-				NavigationLink(destination: NavigationStack{
-								List{
-									Section{
-										NavigationLink(destination: MealArchiveView(archivedMeals: archivedMeals)){
-											HStack{
-												Image(systemName: "fork.knife")
-												Text("Arkiverte oppskrifter")
-											}
-											.foregroundColor(archivedMeals.isEmpty ? .gray : .purple)
-										}
-										.disabled(archivedMeals.isEmpty)
-									} footer: {
-										if archivedMeals.isEmpty{
-											Text("Ingen arkiverte oppskrifter")
-										} else {
-											Text("Antall: \(archivedMeals.count)")
-										}
-									}
-									Section{
-										NavigationLink(destination: IngredientArchiveView(archivedIngredients: archivedIngredients)){
-											HStack{
-												Image(systemName: "carrot.fill")
-												Text("Arkiverte ingredienser")
-											}
-											.foregroundColor(archivedIngredients.isEmpty ? .gray : .purple)
-										}
-										.disabled(archivedIngredients.isEmpty)
-									} footer: {
-										if archivedIngredients.isEmpty{
-											Text("Ingen arkiverte ingredienser")
-										} else {
-											Text("Antall: \(archivedIngredients.count)")
-										}
-									}
-									Section{
-										NavigationLink(destination: CategoryArchiveView(archivedCategories: archivedCategories)){
-											HStack{
-												Image(systemName: "square.grid.2x2.fill")
-												Text("Arkiverte kategorier")
-											}
-											.foregroundColor(archivedCategories.isEmpty ? .gray : .purple)
-										}
-										.disabled(archivedCategories.isEmpty)
-									} footer: {
-										if archivedCategories.isEmpty{
-											Text("Ingen arkiverte kategorier")
-										} else {
-											Text("Antall: \(archivedCategories.count)")
-										}
-									}
-									Section{
-										NavigationLink(destination: AreaArchiveView(archivedAreas: archivedAreas)){
-											HStack{
-												Image(systemName: "globe.europe.africa.fill")
-												Text("Arkiverte landområder")
-											}
-											.foregroundColor(archivedAreas.isEmpty ? .gray : .purple)
-										}
-										.disabled(archivedAreas.isEmpty)
-									} footer: {
-										if archivedAreas.isEmpty{
-											Text("Ingen arkiverte landområder")
-										} else {
-											Text("Antall: \(archivedAreas.count)")
-										}
-									}
-								}
-				}
-					.navigationTitle("Arkiv")
-				) { HStack {
-							Image(systemName: "archivebox.fill")
-							Text("Arkiv")
-						}
-						.foregroundColor(.purple)
+				Section{
+					Toggle(isOn: $viewModel.betterCategorySearch, label: {
+						Text("Søk med kategorier fra api")
+					})
+				} header: {
+					Text("Kategori søkemetode")
+				} footer: {
+					if viewModel.betterCategorySearch {
+						Text("Bruker API sine kategorier til å søke")
+					} else {
+						Text("Bruker lokale kategorier til å søke, siden oppgaven sier det...")
 					}
+				}
+				
+				Section{
+					NavigationLink(destination: NavigationStack{
+									List{
+										Section{
+											NavigationLink(destination: MealArchiveView(archivedMeals: archivedMeals)){
+												HStack{
+													Image(systemName: "fork.knife")
+													Text("Arkiverte oppskrifter")
+												}
+												.foregroundColor(archivedMeals.isEmpty ? .gray : .purple)
+											}
+											.disabled(archivedMeals.isEmpty)
+										} footer: {
+											if archivedMeals.isEmpty{
+												Text("Ingen arkiverte oppskrifter")
+											} else {
+												Text("Antall: \(archivedMeals.count)")
+											}
+										}
+										Section{
+											NavigationLink(destination: IngredientArchiveView(archivedIngredients: archivedIngredients)){
+												HStack{
+													Image(systemName: "carrot.fill")
+													Text("Arkiverte ingredienser")
+												}
+												.foregroundColor(archivedIngredients.isEmpty ? .gray : .purple)
+											}
+											.disabled(archivedIngredients.isEmpty)
+										} footer: {
+											if archivedIngredients.isEmpty{
+												Text("Ingen arkiverte ingredienser")
+											} else {
+												Text("Antall: \(archivedIngredients.count)")
+											}
+										}
+										Section{
+											NavigationLink(destination: CategoryArchiveView(archivedCategories: archivedCategories)){
+												HStack{
+													Image(systemName: "square.grid.2x2.fill")
+													Text("Arkiverte kategorier")
+												}
+												.foregroundColor(archivedCategories.isEmpty ? .gray : .purple)
+											}
+											.disabled(archivedCategories.isEmpty)
+										} footer: {
+											if archivedCategories.isEmpty{
+												Text("Ingen arkiverte kategorier")
+											} else {
+												Text("Antall: \(archivedCategories.count)")
+											}
+										}
+										Section{
+											NavigationLink(destination: AreaArchiveView(archivedAreas: archivedAreas)){
+												HStack{
+													Image(systemName: "globe.europe.africa.fill")
+													Text("Arkiverte landområder")
+												}
+												.foregroundColor(archivedAreas.isEmpty ? .gray : .purple)
+											}
+											.disabled(archivedAreas.isEmpty)
+										} footer: {
+											if archivedAreas.isEmpty{
+												Text("Ingen arkiverte landområder")
+											} else {
+												Text("Antall: \(archivedAreas.count)")
+											}
+										}
+									}
+					}
+						.navigationTitle("Arkiv")
+					) { HStack {
+								Image(systemName: "archivebox.fill")
+								Text("Arkiv")
+							}
+							.foregroundColor(.purple)
+						}
+				} header: {
+					Text("Arkiv")
+				}
 			}
 			.navigationTitle("Innstillinger")
 		}
@@ -1218,7 +1241,7 @@ struct AreaEditView: View {
 struct MealArchiveView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(\.dismiss) var dismiss
-	var archivedMeals: [Meal]
+	var archivedMeals: [MealModel]
 	@State private var showDeleteAlert = false
 	
 	var body: some View {
@@ -1289,10 +1312,10 @@ struct MealArchiveView: View {
 			delete(meal)
 		}
 	}
-	private func unArchive(_ meal: Meal) {
+	private func unArchive(_ meal: MealModel) {
 		meal.archived = false
 	}
-	private func delete(_ meal: Meal) {
+	private func delete(_ meal: MealModel) {
 		modelContext.delete(meal)
 		try? modelContext.save()
 	}
@@ -1548,5 +1571,5 @@ struct AreaArchiveView: View {
 	SettingView()
 		.environmentObject(ColorSchemeManager())
 		.environmentObject(SettingsViewModel())
-		.modelContainer(for: [Meal.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
+		.modelContainer(for: [MealModel.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
 }

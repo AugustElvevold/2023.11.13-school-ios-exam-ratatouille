@@ -14,7 +14,7 @@ class Missing {
 }
 
 @Model
-final class Meal: Decodable, Identifiable {
+final class MealModel: Decodable, Identifiable {
 	@Attribute(.unique) var uuid: UUID
 	var id: String
 	var name: String
@@ -108,5 +108,5 @@ final class Meal: Decodable, Identifiable {
 }
 
 struct APIMealResponse: Decodable {
-	var meals: [Meal]?
+	var meals: [MealModel]?
 }

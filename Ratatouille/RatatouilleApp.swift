@@ -22,22 +22,31 @@ struct RatatouilleApp: App {
 //            fatalError("Could not create ModelContainer: \(error)")
 //        } 
 //    }()
-	@StateObject var searchViewModel = SearchViewModel()
+	@StateObject var splashScreenManager = SplashScreenManager()
 	@StateObject var settingViewModel = SettingsViewModel()
-	@StateObject var csManager = ColorSchemeManager()
+	@StateObject var searchViewModel = SearchViewModel()
 	@StateObject var tabSelection = TabSelection()
+	@StateObject var csManager = ColorSchemeManager()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-						.environmentObject(csManager)
-						.environmentObject(tabSelection)
-						.environmentObject(searchViewModel)
-						.environmentObject(settingViewModel)
-						.onAppear(){
-							csManager.applyColorScheme()
+					ZStack {
+						ContentView()
+							.environmentObject(splashScreenManager)
+							.environmentObject(settingViewModel)
+							.environmentObject(searchViewModel)
+							.environmentObject(tabSelection)
+							.environmentObject(csManager)
+							.onAppear(){
+								csManager.applyColorScheme()
+							}
+						
+						if splashScreenManager.phase != .completed {
+							SplashView()
+								.environmentObject(splashScreenManager)
 						}
+					}
         }
-				.modelContainer(for: [Meal.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
+				.modelContainer(for: [MealModel.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
     }
 }

@@ -13,6 +13,7 @@ class SettingsViewModel: ObservableObject {
 	@Published var apiCategories: [CategoryModel] = []
 	@Published var apiAreas: [AreaModel] = []
 	@Published var queryRequest: Bool = false
+	@Published var betterCategorySearch: Bool = true
 	
 	func fetchIngredients() async {
 		if !apiIngredients.isEmpty{

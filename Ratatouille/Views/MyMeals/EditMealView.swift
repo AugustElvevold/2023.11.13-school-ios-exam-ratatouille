@@ -12,8 +12,8 @@ struct EditMealView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(\.dismiss) private var dismiss
 	
-	var meal: Meal
-	@State private var updatedMeal: Meal = Meal()
+	var meal: MealModel
+	@State private var updatedMeal: MealModel = MealModel()
 	@State private var stringUrl: String = ""
 	@State private var ingredientEntries: [( ingredient: String, measure: String)] = []
 

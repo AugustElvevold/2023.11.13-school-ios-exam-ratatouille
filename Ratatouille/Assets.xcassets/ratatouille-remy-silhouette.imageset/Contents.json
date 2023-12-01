@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ratatouille-remy-silhouette.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

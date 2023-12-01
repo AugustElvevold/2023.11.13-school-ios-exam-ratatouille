@@ -11,7 +11,7 @@ import SwiftData
 struct AddMealView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(\.dismiss) private var dismiss
-	@State private var newMeal: Meal = Meal()
+	@State private var newMeal: MealModel = MealModel()
 	@State private var thumbNailURL: String = ""
 	@State private var ingredientEntries: [( ingredient: String, measure: String)] = []
 	@State private var showAlert: Bool = false

@@ -11,11 +11,15 @@ import SwiftData
 struct SearchView: View {
 	@Environment(\.modelContext) private var modelContext
 	@EnvironmentObject var viewModel: SearchViewModel
+	@EnvironmentObject var settingsViewModel: SettingsViewModel
 	
-	@Query private var savedMeals: [Meal] = [Meal]()
+	@Query private var savedMeals: [MealModel] = [MealModel]()
 	
 	@FocusState private var isEditing: Bool
 	@State private var debounceTask: DispatchWorkItem?
+	@State private var showCategorySearchSheet: Bool = false
+	
+	@State private var showAlert: Bool = false
 	
 	var body: some View {
 		NavigationStack {
@@ -66,7 +70,7 @@ struct SearchView: View {
 				
 				if !viewModel.meals.isEmpty{
 					HStack{
-						Text("Søkeresultater for \"\(viewModel.lastSearchText)\" ga \(viewModel.meals.isEmpty ? "0" : "\(viewModel.meals.count)") resultater ")
+						Text("\(viewModel.searchTitleString)")
 							.font(.caption)
 							.foregroundColor(.secondary)
 							.padding(.horizontal)
@@ -75,7 +79,7 @@ struct SearchView: View {
 					}
 				}
 				
-				if(viewModel.queryRequest){
+				if(viewModel.loadingData){
 					ContentUnavailableView(){
 						ProgressView()
 						Text("Søker..")
@@ -93,14 +97,49 @@ struct SearchView: View {
 						if viewModel.meals.isEmpty && viewModel.noResults{
 							ContentUnavailableView("🤷🏼‍♂️Ingen resultater", systemImage: "magnifyingglass")
 						}
-						if (!viewModel.queryRequest && viewModel.meals.isEmpty && !viewModel.noResults){
+						if (!viewModel.loadingData && viewModel.meals.isEmpty && !viewModel.noResults){
 							ContentUnavailableView("Søk etter matretter", systemImage: "fork.knife")
 						}
 					}
 				}
 			}
+			.sheet(isPresented: $showCategorySearchSheet) {
+				CategorySearchView()
+			}
 //			.background(Color(UIColor.secondarySystemBackground))
 			.background(Color(UIColor.systemBackground))
+			.toolbar{
+				ToolbarItem(placement: .topBarLeading) {
+					Button(action: {
+						showCategorySearchSheet = true
+					}, label: {
+						HStack{
+							Image(systemName: "text.magnifyingglass")
+							Text("Kategorier")
+						}
+					})
+				}
+				ToolbarItem(placement: .topBarTrailing) {
+					Button(action: {
+						// open filters
+						showAlert = true
+					}, label: {
+						HStack{
+							Text("Filter")
+							Image(systemName: "slider.horizontal.3")
+						}
+					})
+				}
+			}
+		}
+		.onAppear {
+			viewModel.ensureCategoryFilterDataIsFetched()
+		}
+		.alert(isPresented: $showAlert)  {
+			Alert(
+				title: Text("Not available yet"),
+				message: Text("Dumb ass!"),
+				dismissButton: .default(Text("Jeg er dum")))
 		}
 	}
 	func isMealSaved(mealID: String) -> Bool {
@@ -115,6 +154,9 @@ struct SearchView: View {
 		return matchedMeal.archived
 	}
 	private func debounceSearch(immediate: Bool) {
+		if viewModel.searchText == viewModel.searchTextPrev {
+			return
+		}
 		// Cancel the previous task if it exists
 		debounceTask?.cancel()
 		
@@ -146,12 +188,13 @@ struct SearchView: View {
 #Preview {
 	SearchView()
 		.environmentObject(SearchViewModel())
-		.modelContainer(for: Meal.self)
+		.environmentObject(SettingsViewModel())
+		.modelContainer(for: [MealModel.self, AreaModel.self, IngredientModel.self, CategoryModel.self])
 }
 
 struct MealRowView: View {
 	@Environment(\.modelContext) private var modelContext
-	@State var meal: Meal
+	@State var meal: MealModel
 	@State var alreadySavedMeal = false
 	@State var savedMealArchived = false
 	
@@ -209,8 +252,8 @@ struct MealRowView: View {
 			}
 		}
 	}
-	func saveMeal(meal: Meal) {
-		let meal = Meal(
+	func saveMeal(meal: MealModel) {
+		let meal = MealModel(
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.strCategory,
@@ -229,5 +272,114 @@ struct MealRowView: View {
 		modelContext.insert(meal)
 		try? modelContext.save()
 		alreadySavedMeal = true
+	}
+}
+
+struct CategorySearchView: View {
+	@Environment(\.modelContext) private var modelContext
+	@EnvironmentObject var searchViewModel: SearchViewModel
+	@EnvironmentObject var settingsViewModel: SettingsViewModel
+	@Environment(\.dismiss) var dismiss
+	
+	@State private var areas: [String] = []
+	@State private var categories: [String] = []
+	@State private var ingredients: [String] = []
+	
+	@Query private var savedAreas: [AreaModel] = [AreaModel]()
+	@Query private var savedCategories: [CategoryModel] = [CategoryModel]()
+	@Query private var savedIngredients: [IngredientModel] = [IngredientModel]()
+	
+	var body: some View {
+		NavigationStack{
+			List{
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Landområder"), label: {
+					HStack {
+						Image(systemName: "globe.europe.africa.fill")
+							.foregroundColor(.blue)
+							.font(.title)
+							.frame(width: 44, alignment: .center) // Fixed width for the icon
+						Text("Landområder")
+							.font(.headline)
+					}
+					.frame(height: 50)
+				})
+				
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Kategorier"), label: {
+					HStack {
+						Image(systemName: "square.grid.2x2.fill")
+							.foregroundColor(.green)
+							.font(.title)
+							.frame(width: 44, alignment: .center) // Fixed width for the icon
+						Text("Kategorier")
+							.font(.headline)
+					}
+					.frame(height: 50)
+				})
+				
+				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Ingredienser"), label: {
+					HStack {
+						Image(systemName: "carrot.fill")
+							.foregroundColor(.orange)
+							.font(.title)
+							.frame(width: 44, alignment: .center) // Fixed width for the icon
+						Text("Ingredienser")
+							.font(.headline)
+					}
+					.frame(height: 50)
+				})
+			}
+			.navigationTitle("Velg kategori")
+		}
+		.onAppear {
+			setCategories()
+		}
+	}
+	private func setCategories() {
+		if settingsViewModel.betterCategorySearch {
+			areas = searchViewModel.allApiAreas
+			categories = searchViewModel.allApiCategories
+			ingredients = searchViewModel.allApiIngredients
+		} else {
+			areas = savedAreas.map { $0.name }
+			categories = savedCategories.map { $0.name }
+			ingredients = savedIngredients.map { $0.name }
+		}
+	}
+}
+
+struct CategorySearchListView: View {
+	@EnvironmentObject var searchViewModel: SearchViewModel
+	@EnvironmentObject var settingsViewModel: SettingsViewModel
+	@Environment(\.dismiss) var dismiss
+	var dismissParent: DismissAction
+	var categories: [String]
+	var title: String
+	
+	var body: some View {
+		NavigationStack{
+			Group{
+					if !searchViewModel.allApiAreas.isEmpty {
+						List(categories, id: \.self) { category in
+							Button {
+								Task{
+									await search(category: category)
+								}
+							} label: {
+								Text("\(category)")
+							}
+
+						}
+					} else {
+						Text("Noe gikk galt ved innlasting av \(title.lowercased())")
+					}
+			}
+			.navigationTitle("\(title)")
+		}
+
+	}
+	private func search(category: String) async {
+		dismiss()
+		dismissParent()
+		await searchViewModel.fetchMealsBy(category, APIString.searchByArea)
 	}
 }

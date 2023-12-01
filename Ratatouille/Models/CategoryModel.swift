@@ -17,8 +17,8 @@ final class CategoryModel: Decodable, Identifiable {
 	var categoryThumb: URL
 	var archived: Bool
 	
-	@Relationship(deleteRule: .nullify, inverse: \Meal.category)
-	var meals: [Meal]?
+	@Relationship(deleteRule: .nullify, inverse: \MealModel.category)
+	var meals: [MealModel]?
 	
 	init(
 		_ id: String = "",
