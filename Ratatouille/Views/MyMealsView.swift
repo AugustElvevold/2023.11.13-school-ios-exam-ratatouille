@@ -227,6 +227,7 @@ struct MealDetailView: View {
 	}
 
 	func saveMeal(meal: MealModel) {
+		self.meal.saved = true
 		let meal = MealModel(
 			id: meal.id,
 			name: meal.name,

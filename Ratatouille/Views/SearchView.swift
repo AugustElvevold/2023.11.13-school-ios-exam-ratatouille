@@ -225,7 +225,7 @@ struct MealRowView: View {
 			}
 			
 			Spacer()
-			if alreadySavedMeal {
+			if self.meal.saved {
 				VStack{
 						Image(systemName: savedMealArchived ? "archivebox.fill" : "tray.full.fill")
 							.foregroundColor(savedMealArchived ? .red : .green)
@@ -253,6 +253,7 @@ struct MealRowView: View {
 		}
 	}
 	func saveMeal(meal: MealModel) {
+		self.meal.saved = true
 		let meal = MealModel(
 			id: meal.id,
 			name: meal.name,
