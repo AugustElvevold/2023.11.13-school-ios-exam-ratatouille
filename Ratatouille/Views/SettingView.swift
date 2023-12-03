@@ -69,10 +69,11 @@ struct SettingView: View {
 						Text("Automatisk").tag(ColorScheme.unspecified)
 					}
 					.pickerStyle(SegmentedPickerStyle())
+					.listRowInsets(EdgeInsets())
 				} header: {
 					Text("Tema")
 				}
-				.padding(.horizontal, -14)
+				.padding(.horizontal, 6)
 				
 				Section{
 					Toggle(isOn: $viewModel.betterCategorySearch, label: {
