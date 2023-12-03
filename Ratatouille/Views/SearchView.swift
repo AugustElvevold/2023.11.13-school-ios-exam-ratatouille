@@ -19,8 +19,6 @@ struct SearchView: View {
 	@State private var debounceTask: DispatchWorkItem?
 	@State private var showCategorySearchSheet: Bool = false
 	
-	@State private var showAlert: Bool = false
-	
 	var body: some View {
 		NavigationStack {
 			VStack {
@@ -107,23 +105,13 @@ struct SearchView: View {
 			}
 			.background(Color(UIColor.systemBackground))
 			.toolbar{
-				ToolbarItem(placement: .topBarLeading) {
+				ToolbarItem(placement: .topBarTrailing) {
 					Button(action: {
 						showCategorySearchSheet = true
 					}, label: {
 						HStack{
+							Text("Filtrert søk")
 							Image(systemName: "text.magnifyingglass")
-							Text("Kategorier")
-						}
-					})
-				}
-				ToolbarItem(placement: .topBarTrailing) {
-					Button(action: {
-						showAlert = true
-					}, label: {
-						HStack{
-							Text("Filter")
-							Image(systemName: "slider.horizontal.3")
 						}
 					})
 				}
@@ -131,12 +119,6 @@ struct SearchView: View {
 		}
 		.onAppear {
 			viewModel.ensureCategoryFilterDataIsFetched()
-		}
-		.alert(isPresented: $showAlert)  {
-			Alert(
-				title: Text("Not available yet"),
-				message: Text("Dumb ass!"),
-				dismissButton: .default(Text("Jeg er dum")))
 		}
 	}
 	func isMealSaved(mealID: String) -> Bool {
