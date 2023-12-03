@@ -180,6 +180,7 @@ struct MealDetailView: View {
 									Text("Gå til oppskrift")
 										.foregroundColor(.blue)
 										.padding(.leading, 8)
+									Spacer()
 								}
 							}
 						}
@@ -197,6 +198,7 @@ struct MealDetailView: View {
 									Text("Se på YouTube")
 										.foregroundColor(.red)
 										.padding(.leading, 8)
+									Spacer()
 								}
 							}
 						}
