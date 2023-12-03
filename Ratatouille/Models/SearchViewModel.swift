@@ -65,6 +65,7 @@ class SearchViewModel: ObservableObject {
 			self.searchTitleString = "Alle \"\(item)\" matoppskrifter"
 			self.searchText = ""
 			self.loadingData = false
+			self.noResults = fetchedMeals.isEmpty
 		}
 	}
 	
