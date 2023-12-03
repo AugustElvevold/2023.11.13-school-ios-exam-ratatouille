@@ -38,16 +38,12 @@ class SearchViewModel: ObservableObject {
 			self.meals = fetchedMeals
 			self.searchTitleString = "Søkeresultater for \"\(self.searchText)\" ga \(self.meals.isEmpty ? "0" : "\(self.meals.count)") treff"
 			self.searchTextPrev = self.searchText
-//			self.applyFilters()
 			self.loadingData = false
 			self.noResults = fetchedMeals.isEmpty
 		}
 	}
 	
 	func fetchAllData() async {
-		//		if (!allCountries.isEmpty && !allCategories.isEmpty && !allIngredients.isEmpty) {
-		//			return
-		//		}
 		let categories = await fetchFilterOptions(urlString: APIString.categoryList)
 		let areas = await fetchFilterOptions(urlString: APIString.areaList)
 		let ingredients = await fetchFilterOptions(urlString: APIString.ingredientList)
@@ -63,13 +59,11 @@ class SearchViewModel: ObservableObject {
 		DispatchQueue.main.async {
 			self.loadingData = true
 		}
-//		print(apiTypeString + item)
 		let fetchedMeals = await fetchMealsByItem(from: apiTypeString + item)
 		DispatchQueue.main.async {
 			self.meals = fetchedMeals
 			self.searchTitleString = "Alle \"\(item)\" matoppskrifter"
 			self.searchText = ""
-//			self.applyFilters()
 			self.loadingData = false
 		}
 	}

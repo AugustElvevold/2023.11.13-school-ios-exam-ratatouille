@@ -76,7 +76,6 @@ struct MyMealRowView: View {
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-				//				Text(meal.strArea.name)
 				Text(meal.strArea)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
@@ -205,7 +204,6 @@ struct MealDetailView: View {
 					.buttonStyle(.plain)
 				}
 			}
-//			.listStyle(GroupedListStyle())
 			.navigationTitle(meal.name)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
@@ -232,7 +230,6 @@ struct MealDetailView: View {
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.strCategory,
-			//			strArea: meal.strArea.name,
 			strArea: meal.strArea,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
@@ -364,7 +361,6 @@ struct EditMealView: View {
 	private func updateMeal() {
 		meal.name = updatedMeal.name
 		meal.strCategory = updatedMeal.strCategory
-		//		meal.strArea.name = updatedMeal.strArea.name
 		meal.strArea = updatedMeal.strArea
 		meal.instructions = updatedMeal.instructions
 		meal.image = URL(string: stringUrl) ?? Missing.imageUrl

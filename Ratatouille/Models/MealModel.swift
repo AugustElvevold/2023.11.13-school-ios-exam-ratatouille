@@ -48,7 +48,6 @@ final class MealModel: Decodable, Identifiable {
 		self.id = id
 		self.name = name
 		self.strCategory = strCategory
-//		self.area = AreaManager.shared.findOrCreateArea(named: strArea)
 		self.strArea = strArea
 		self.instructions = strInstructions
 		self.image = strMealThumb
@@ -76,8 +75,6 @@ final class MealModel: Decodable, Identifiable {
 		id = try container.decode(String.self, forKey: .id)
 		name = try container.decode(String.self, forKey: .name)
 		strCategory = try container.decodeIfPresent(String.self, forKey: .strCategory) ?? ""
-//		let areaName = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
-//		area = AreaManager.shared.findOrCreateArea(named: areaName)
 		strArea = try container.decodeIfPresent(String.self, forKey: .strArea) ?? ""
 		instructions = try container.decodeIfPresent(String.self, forKey: .strInstructions) ?? ""
 		image = try container.decodeIfPresent(URL.self, forKey: .strMealThumb) ?? Missing.imageUrl
@@ -96,8 +93,6 @@ final class MealModel: Decodable, Identifiable {
 			}
 		}
 		self.ingredients = tempIngredients
-		
-		// Set default values for properties not present in the API response
 		uuid = UUID()
 		saved = false
 		updatedDate = .now

@@ -11,7 +11,7 @@ import SwiftData
 struct APIString {
 	static let baseURL = "https://www.themealdb.com/api/json/v1/1/"
 	static let categoryListFull = "\(baseURL)categories.php"
-	static let categoryList = "\(baseURL)list.php?c=list" // For some reason is missing a few categories
+	static let categoryList = "\(baseURL)list.php?c=list"
 	static let areaList = "\(baseURL)list.php?a=list"
 	static let ingredientList = "\(baseURL)list.php?i=list"
 	static let search = "\(baseURL)search.php?s="
@@ -29,7 +29,6 @@ func fetchData<T: Decodable>(from urlString: String) async -> T? {
 	
 	do {
 		let (data, _) = try await URLSession.shared.data(from: url)
-//		print("Fetched data from: \(urlString)")
 		let decodedResponse = try JSONDecoder().decode(T.self, from: data)
 		return decodedResponse
 	} catch {
@@ -46,7 +45,6 @@ func fetchMeals(query: String) async -> [MealModel] {
 
 func fetchMealsByItem(from urlString: String) async -> [MealModel] {
 	let response: APIMealResponse? = await fetchData(from: urlString)
-	// Uses response meals names to fetch the full meals one by one and then add them to meals before returning. The API does not return a full meal when searching by category, area or ingredient...
 	var meals: [MealModel] = []
 	print("fetchMealsByItem response: \(response?.meals ?? [])")
 	for response in response?.meals ?? [] {

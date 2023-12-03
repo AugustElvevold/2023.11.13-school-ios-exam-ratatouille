@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SplashView: View {
-	@State private var imageOpacity = 1.0 // Full opacity initially
+	@State private var imageOpacity = 1.0
 	
 	@EnvironmentObject var splashScreenManager: SplashScreenManager
 	
@@ -61,7 +61,7 @@ private extension SplashView {
 		}
 		.onAppear{
 			withAnimation(.easeOut(duration: 0.8)) {
-				imageOpacity = 0 // Fade out
+				imageOpacity = 0
 			}
 		}
 	}

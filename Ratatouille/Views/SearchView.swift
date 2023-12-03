@@ -24,14 +24,13 @@ struct SearchView: View {
 	var body: some View {
 		NavigationStack {
 			VStack {
-				// Search bar
 				HStack {
 					HStack{
 						Image(systemName: "magnifyingglass")
 							.foregroundColor(.gray)
 							.padding(.horizontal, 8)
 						TextField("Søk etter oppskrifter", text: $viewModel.searchText, onEditingChanged: { editing in
-							self.isEditing = editing // Update the state when editing starts or ends
+							self.isEditing = editing
 						})
 						.padding(.horizontal, -8)
 						.padding(.vertical, 9)
@@ -106,7 +105,6 @@ struct SearchView: View {
 			.sheet(isPresented: $showCategorySearchSheet) {
 				CategorySearchView()
 			}
-//			.background(Color(UIColor.secondarySystemBackground))
 			.background(Color(UIColor.systemBackground))
 			.toolbar{
 				ToolbarItem(placement: .topBarLeading) {
@@ -121,7 +119,6 @@ struct SearchView: View {
 				}
 				ToolbarItem(placement: .topBarTrailing) {
 					Button(action: {
-						// open filters
 						showAlert = true
 					}, label: {
 						HStack{
@@ -143,11 +140,9 @@ struct SearchView: View {
 		}
 	}
 	func isMealSaved(mealID: String) -> Bool {
-		// Check if the meal exists and hasn't been updated since creation
 		return savedMeals.contains { $0.id == mealID && $0.updatedDate == $0.createdDate }
 	}
 	func isMealArchived(mealID: String) -> Bool {
-		// Check if the meal is saved and archived
 		guard let matchedMeal = savedMeals.first(where: { $0.id == mealID }) else {
 			return false
 		}
@@ -157,22 +152,17 @@ struct SearchView: View {
 		if viewModel.searchText == viewModel.searchTextPrev {
 			return
 		}
-		// Cancel the previous task if it exists
 		debounceTask?.cancel()
 		
 		if immediate {
-			// Perform search immediately
 			performSearch()
 		} else {
-			// Create a new task for delayed execution
 			let task = DispatchWorkItem {
 				performSearch()
 			}
 			
-			// Schedule the new task to run after 1 second
 			DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: task)
 			
-			// Store the new task
 			debounceTask = task
 		}
 	}
@@ -208,7 +198,6 @@ struct MealRowView: View {
 				.frame(width: 80, height: 80)
 				.cornerRadius(10)
 			
-			// Text Content
 			VStack(alignment: .leading, spacing: 4) {
 				Text(meal.name)
 					.font(.headline)
@@ -217,7 +206,6 @@ struct MealRowView: View {
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
-//				Text(meal.strArea.name)
 				Text(meal.strArea)
 					.font(.subheadline)
 					.foregroundColor(.secondary)
@@ -258,7 +246,6 @@ struct MealRowView: View {
 			id: meal.id,
 			name: meal.name,
 			strCategory: meal.strCategory,
-//			strArea: meal.strArea.name,
 			strArea: meal.strArea,
 			strInstructions: meal.instructions,
 			strMealThumb: meal.image,
@@ -298,7 +285,7 @@ struct CategorySearchView: View {
 						Image(systemName: "globe.europe.africa.fill")
 							.foregroundColor(.blue)
 							.font(.title)
-							.frame(width: 44, alignment: .center) // Fixed width for the icon
+							.frame(width: 44, alignment: .center)
 						Text("Landområder")
 							.font(.headline)
 					}
@@ -310,7 +297,7 @@ struct CategorySearchView: View {
 						Image(systemName: "square.grid.2x2.fill")
 							.foregroundColor(.green)
 							.font(.title)
-							.frame(width: 44, alignment: .center) // Fixed width for the icon
+							.frame(width: 44, alignment: .center)
 						Text("Kategorier")
 							.font(.headline)
 					}
@@ -322,7 +309,7 @@ struct CategorySearchView: View {
 						Image(systemName: "carrot.fill")
 							.foregroundColor(.orange)
 							.font(.title)
-							.frame(width: 44, alignment: .center) // Fixed width for the icon
+							.frame(width: 44, alignment: .center)
 						Text("Ingredienser")
 							.font(.headline)
 					}
@@ -369,7 +356,6 @@ struct CategorySearchListView: View {
 							} label: {
 								Text("\(category)")
 							}
-
 						}
 					} else {
 						Text("Noe gikk galt ved innlasting av \(title.lowercased())")
@@ -377,7 +363,6 @@ struct CategorySearchListView: View {
 			}
 			.navigationTitle("\(title)")
 		}
-
 	}
 	private func search(category: String) async {
 		dismiss()

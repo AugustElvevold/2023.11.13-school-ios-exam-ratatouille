@@ -63,7 +63,6 @@ struct SettingView: View {
 				}
 				
 				Section{
-					// Denne vil ikke fungere på preview, test på emulator!
 					Picker("Tema", selection: $csManager.colorScheme) {
 						Text("Mørkt").tag(ColorScheme.dark)
 						Text("Lyst").tag(ColorScheme.light)
@@ -290,7 +289,6 @@ struct IngredientsView: View {
 	
 	func saveIngredient(_ ingredient: IngredientModel) {
 		if !ingredients.contains(where: { $0.id == ingredient.id }) {
-			// If no existing ingredient with the same ID, create and add a new one
 			let newIngredient = IngredientModel(
 				ingredient.id,
 				ingredient.name,
@@ -305,7 +303,6 @@ struct IngredientsView: View {
 		if let existingIngredientIndex = ingredients.firstIndex(where: { $0.id == ingredient.id }) {
 			ingredients[existingIngredientIndex].archived = false
 		} else {
-			// If no existing ingredient with the same ID, create and add a new one
 			let newIngredient = IngredientModel(
 				ingredient.id,
 				ingredient.name,
@@ -326,11 +323,9 @@ struct IngredientsView: View {
 		print("Check if ingredient list is up to date")
 		await viewModel.fetchIngredients()
 		
-		// Create a dictionary from the ingredients array for quick ID-based lookup
 		let ingredientsDict = Dictionary(uniqueKeysWithValues: ingredients.map { ($0.id, !$0.archived) })
 		
 		return viewModel.apiIngredients.allSatisfy { apiIngredient in
-			// Check if the ingredient exists in the dictionary and is not archived
 			return ingredientsDict[apiIngredient.id] ?? false
 		}
 	}
@@ -709,7 +704,6 @@ struct CategoryDetailView: View {
 		NavigationStack {
 			ScrollView {
 				VStack(alignment: .leading, spacing: 20) {
-					// Display the category image
 					AsyncImage(url: category.categoryThumb) { image in
 						image
 							.resizable()
@@ -1093,7 +1087,6 @@ struct AreaAddView: View {
 								}
 							}
 						
-						// Display flag based on the entered country code
 						AsyncImage(url: newArea.flagUrl) { image in
 							image.resizable()
 								.aspectRatio(contentMode: .fit)

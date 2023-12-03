@@ -52,4 +52,3 @@ final class IngredientModel: Decodable, Identifiable {
 struct IngredientsResponse: Decodable {
 	var meals: [IngredientModel]
 }
-

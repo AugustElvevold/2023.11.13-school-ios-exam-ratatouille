@@ -56,8 +56,6 @@ struct ContentView: View {
 		.environmentObject(ColorSchemeManager())
 		.environmentObject(SettingsViewModel())
 		.modelContainer(for: [MealModel.self, IngredientModel.self, CategoryModel.self, AreaModel.self])
-//	Removes all data from the database after stopping the preview
-//		.modelContainer(for: Meal.self, inMemory: true)
 }
 
 class TabSelection: ObservableObject {
