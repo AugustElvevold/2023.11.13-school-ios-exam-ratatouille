@@ -12,17 +12,16 @@ import SwiftData
 struct RatatouilleApp: App {
 	@StateObject var splashScreenManager = SplashScreenManager()
 	@StateObject var settingViewModel = SettingsViewModel()
-	@StateObject var searchViewModel = SearchViewModel()
+	var searchViewModel = SearchViewModel()
 	@StateObject var tabSelection = TabSelection()
 	@StateObject var csManager = ColorSchemeManager()
 
     var body: some Scene {
         WindowGroup {
 					ZStack {
-						ContentView()
+						ContentView(searchViewModel: SearchViewModel())
 							.environmentObject(splashScreenManager)
 							.environmentObject(settingViewModel)
-							.environmentObject(searchViewModel)
 							.environmentObject(tabSelection)
 							.environmentObject(csManager)
 							.onAppear(){

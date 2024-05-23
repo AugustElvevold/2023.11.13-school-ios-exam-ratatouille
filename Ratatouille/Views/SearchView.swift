@@ -10,7 +10,7 @@ import SwiftData
 
 struct SearchView: View {
 	@Environment(\.modelContext) private var modelContext
-	@EnvironmentObject var viewModel: SearchViewModel
+	@Bindable var viewModel: SearchViewModel
 	@EnvironmentObject var settingsViewModel: SettingsViewModel
 	
 	@Query private var savedMeals: [MealModel] = [MealModel]()
@@ -101,7 +101,7 @@ struct SearchView: View {
 				}
 			}
 			.sheet(isPresented: $showCategorySearchSheet) {
-				CategorySearchView()
+				CategorySearchView(searchViewModel: viewModel)
 			}
 			.background(Color(UIColor.systemBackground))
 			.toolbar{
@@ -158,8 +158,7 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView()
-		.environmentObject(SearchViewModel())
+	SearchView(viewModel: SearchViewModel())
 		.environmentObject(SettingsViewModel())
 		.modelContainer(for: [MealModel.self, AreaModel.self, IngredientModel.self, CategoryModel.self])
 }
@@ -247,7 +246,7 @@ struct MealRowView: View {
 
 struct CategorySearchView: View {
 	@Environment(\.modelContext) private var modelContext
-	@EnvironmentObject var searchViewModel: SearchViewModel
+	var searchViewModel: SearchViewModel
 	@EnvironmentObject var settingsViewModel: SettingsViewModel
 	@Environment(\.dismiss) var dismiss
 	
@@ -262,7 +261,7 @@ struct CategorySearchView: View {
 	var body: some View {
 		NavigationStack{
 			List{
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: areas, title: "Landområder", apiString: APIString.searchByArea), label: {
+				NavigationLink(destination: CategorySearchListView(searchViewModel: searchViewModel, dismissParent: dismiss, categories: areas, title: "Landområder", apiString: APIString.searchByArea), label: {
 					HStack {
 						Image(systemName: "globe.europe.africa.fill")
 							.foregroundColor(.blue)
@@ -274,7 +273,7 @@ struct CategorySearchView: View {
 					.frame(height: 50)
 				})
 				
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: categories, title: "Kategorier", apiString: APIString.searchByCategory), label: {
+				NavigationLink(destination: CategorySearchListView(searchViewModel: searchViewModel, dismissParent: dismiss, categories: categories, title: "Kategorier", apiString: APIString.searchByCategory), label: {
 					HStack {
 						Image(systemName: "square.grid.2x2.fill")
 							.foregroundColor(.green)
@@ -286,7 +285,7 @@ struct CategorySearchView: View {
 					.frame(height: 50)
 				})
 				
-				NavigationLink(destination: CategorySearchListView(dismissParent: dismiss, categories: ingredients, title: "Ingredienser", apiString: APIString.searchByIngredient), label: {
+				NavigationLink(destination: CategorySearchListView(searchViewModel: searchViewModel, dismissParent: dismiss, categories: ingredients, title: "Ingredienser", apiString: APIString.searchByIngredient), label: {
 					HStack {
 						Image(systemName: "carrot.fill")
 							.foregroundColor(.orange)
@@ -318,7 +317,7 @@ struct CategorySearchView: View {
 }
 
 struct CategorySearchListView: View {
-	@EnvironmentObject var searchViewModel: SearchViewModel
+	var searchViewModel: SearchViewModel
 	@EnvironmentObject var settingsViewModel: SettingsViewModel
 	@Environment(\.dismiss) var dismiss
 	var dismissParent: DismissAction

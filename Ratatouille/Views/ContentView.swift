@@ -11,7 +11,7 @@ import SwiftData
 struct ContentView: View {
 	@Environment(\.modelContext) private var modelContext
 	@EnvironmentObject var splashScreenManager: SplashScreenManager
-	@EnvironmentObject var searchViewModel: SearchViewModel
+	var searchViewModel: SearchViewModel
 	@EnvironmentObject var settingViewModel: SettingsViewModel
 	@EnvironmentObject var tabSelection: TabSelection
 	@EnvironmentObject var csManager: ColorSchemeManager
@@ -23,11 +23,11 @@ struct ContentView: View {
 					Label("Oppskrifter", systemImage: "list.bullet")
 				}
 				.tag(TabSelection.Tab.recipes)
-			SearchView()
+			SearchView(viewModel: searchViewModel)
 				.tabItem {
 					Label("Søk", systemImage: "magnifyingglass")
 				}
-				.environmentObject(searchViewModel)
+				.environment(searchViewModel)
 				.environmentObject(settingViewModel)
 				.tag(TabSelection.Tab.search)
 			SettingView()
@@ -49,9 +49,8 @@ struct ContentView: View {
 }
 
 #Preview {
-	ContentView()
+	ContentView(searchViewModel: SearchViewModel())
 		.environmentObject(SplashScreenManager())
-		.environmentObject(SearchViewModel())
 		.environmentObject(TabSelection())
 		.environmentObject(ColorSchemeManager())
 		.environmentObject(SettingsViewModel())

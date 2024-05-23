@@ -6,18 +6,19 @@
 //
 
 import Foundation
+import Observation
 
-class SearchViewModel: ObservableObject {
-	@Published var meals: [MealModel] = []
-	@Published var searchText: String = ""
-	@Published var searchTextPrev: String = ""
-	@Published var searchTitleString: String = ""
-	@Published var loadingData: Bool = false
-	@Published var noResults: Bool = false
+@Observable class SearchViewModel {
+	var meals: [MealModel] = []
+	var searchText: String = ""
+	var searchTextPrev: String = ""
+	var searchTitleString: String = ""
+	var loadingData: Bool = false
+	var noResults: Bool = false
 	
-	@Published var allApiAreas: [String] = []
-	@Published var allApiCategories: [String] = []
-	@Published var allApiIngredients: [String] = []
+	var allApiAreas: [String] = []
+	var allApiCategories: [String] = []
+	var allApiIngredients: [String] = []
 	
 	private var isCategoryFilterDataFetched = false
 	
